@@ -362,6 +362,13 @@ $("bGo").onclick=()=>{if(load()===0){toast("Załaduj coś najpierw — budowa cz
 
 /* ====== JAZDA ====== */
 const cv=$("cv"),ctx=cv.getContext("2d");
+function fitCanvas(){
+ const app=document.getElementById("app"),dpr=Math.min(3,window.devicePixelRatio||1);
+ const aw=app.clientWidth||430,ah=app.clientHeight||696;
+ cv.width=Math.round(aw*dpr);cv.height=Math.round(ah*dpr);
+ ctx.setTransform(cv.width/430,0,0,cv.height/696,0,0);
+}
+fitCanvas();addEventListener("resize",fitCanvas);
 const W=430,H=696,LANES=[W/2-110,W/2,W/2+110],VY=H-150;
 function startTrip(dir){
  S.trip=dir;S.dist=0;S.tripLen=dir===1?2600:1700;S.lane=1;S.laneX=1;S.speed=0;S.obs=[];S.stop=0;

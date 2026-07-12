@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Amarok: Górski Kurs</title>
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700;900&family=Saira:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#0B2A4A;--navy-d:#071D34;--cream:#F4ECD8;--amber:#E3A72F;--orange:#D4622A;
+    --ok:#5E8C5A;--bad:#B03A3A;--steel:#8C949C;--turbo:#7A4FD4}
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;
+    user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-webkit-touch-callout:none}
+  *::selection{background:transparent}
+  button{-webkit-user-select:none!important;user-select:none!important}
+  html,body{height:100%;background:#0A0F16;font-family:'Saira',system-ui,sans-serif;color:var(--cream);
+    overflow:hidden;touch-action:manipulation;overscroll-behavior:none}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  #app{position:relative;width:min(100vw,62vh);height:min(161.9vw,100vh);max-width:430px;background:#0A0F16;overflow:hidden;box-shadow:0 0 60px #000A}
+  canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+  h1,h2{font-family:'Saira Condensed',Impact,'Arial Narrow',sans-serif;text-transform:uppercase;letter-spacing:.03em}
+  .screen{position:absolute;inset:0;display:none;flex-direction:column;padding:18px;background:var(--navy-d);z-index:10;overflow-y:auto}
+  .screen.on{display:flex}
+  .vhead{position:relative;background:var(--navy);padding:20px 16px 34px;margin:-18px -18px 14px;text-align:center}
+  .vhead::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:26px;
+    background:var(--navy-d);clip-path:polygon(0 100%,0 55%,50% 0,100% 55%,100% 100%)}
+  .badge{width:52px;height:52px;border-radius:50%;background:var(--cream);color:var(--navy);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 8px;
+    font-family:'Saira Condensed';font-weight:900;font-size:17px;border:3px solid var(--amber)}
+  .vhead h1{font-size:29px;font-weight:900;color:var(--cream);line-height:1.05}
+  .vhead .sub{font-size:13px;color:#9FC0DC;letter-spacing:.18em;text-transform:uppercase;margin-top:4px}
+  .btn{display:block;width:100%;border:0;border-radius:10px;padding:14px;margin-top:12px;cursor:pointer;
+    touch-action:manipulation;font-family:'Saira Condensed';font-weight:700;font-size:19px;
+    text-transform:uppercase;letter-spacing:.05em;background:var(--orange);color:#fff}
+  .btn.ghost{background:#1A3050;color:var(--cream);text-align:left;font-size:16px}
+  .btn:active{transform:translateY(2px)}
+  .card{background:#12233A;border-radius:12px;padding:14px;margin-top:12px}
+  .fact{font-size:14.5px;line-height:1.45;color:#E9E2D0}
+  .fact b{color:var(--amber)}
+  .meta{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .chip{background:#0C1828;border-radius:6px;padding:5px 9px;font-size:12px;color:var(--steel)}
+  .chip b{color:var(--cream)}
+  #hud{position:absolute;left:0;right:0;top:0;padding:8px 10px;z-index:5;display:none;background:linear-gradient(#0A0F16EE,#0A0F1600)}
+  #hud .top{display:flex;justify-content:space-between;font-family:'Saira Condensed';font-weight:700;font-size:15px;color:var(--cream)}
+  #hud .row{display:flex;gap:8px;align-items:center;font-size:11px;color:var(--steel);margin-top:4px}
+  #hud .hbar{flex:1;height:9px;background:#060A10;border-radius:5px;overflow:hidden}
+  #hud .hbar>i{display:block;height:100%}
+  #ctrl{position:absolute;left:0;right:0;bottom:0;z-index:5;display:none;gap:8px;padding:10px;justify-content:space-between}
+  .pedal{flex:1;height:72px;border-radius:12px;border:0;touch-action:none;
+    font-family:'Saira Condensed';font-weight:900;font-size:18px;text-transform:uppercase;color:#fff;opacity:.93}
+  #brake{background:var(--bad)} #gas{background:var(--ok)}
+  #turbo{flex:0 0 84px;background:var(--turbo);font-size:15px;line-height:1.1}
+  #turbo:disabled{background:#2A2A38;color:#5A5A68}
+  #toast{position:absolute;left:12px;right:12px;top:92px;z-index:8;background:#0A0F16E8;border-left:4px solid var(--amber);
+    border-radius:8px;padding:10px 12px;font-size:13.5px;display:none;line-height:1.35}
+  .stars{font-size:34px;text-align:center;letter-spacing:6px;margin:6px 0}
+  .big{font-family:'Saira Condensed';font-weight:900;font-size:44px;text-align:center;color:var(--amber)}
+  #wmfoot{position:absolute;left:0;right:0;bottom:2px;z-index:6;pointer-events:none;text-align:center;
+    font-size:9.5px;color:#5A6673;letter-spacing:.06em}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="app">
+  <canvas id="cv" width="430" height="696"></canvas>
+
+  <div id="hud">
+    <div class="top"><span id="hLvl">⛰ 1/4</span><span id="hDist">0 m</span><span id="hScore">0 pkt</span><span id="hSpeed">0 km/h</span></div>
+    <div class="row">⛽<div class="hbar"><i id="hF" style="background:var(--amber)"></i></div>
+      📦 <b id="hBox" style="color:var(--cream)">6/6</b>
+      <span style="color:var(--steel)">wstrząsy</span><div class="hbar" style="max-width:70px"><i id="hSt" style="background:var(--bad)"></i></div></div>
+  </div>
+  <div id="toast"></div>
+  <div id="ctrl">
+    <button class="pedal" id="brake">🛑 Hamulec</button>
+    <button class="pedal" id="turbo" disabled>🌀 TURBO<br><span id="tCnt">×0</span></button>
+    <button class="pedal" id="gas">⛽ Gaz</button>
+  </div>
+
+  <!-- CIEKAWOSTKA -->
+  <div class="screen" id="sStory">
+    <div class="vhead"><div class="badge" id="stBadge">1</div><h1 id="stTitle"></h1><div class="sub" id="stSub"></div></div>
+    <div class="card fact"><b style="letter-spacing:.08em">🐺 CZY WIESZ, ŻE…</b><br><span id="stFact"></span></div>
+    <div class="meta" id="stMeta"></div>
+    <div class="card fact" style="font-size:12.5px">🎮 <b>Gaz/Hamulec</b> (↑↓) · w locie gaz unosi przód ⤴, hamulec opuszcza ⤵ — laduj na kołach!<br>⛽ kanister: przejedź lub stuknij palcem · 🌀 turbo: przycisk/spacja (pali 3×) · 📦 jedź płynnie, bo towar wyskoczy</div>
+    <button class="btn" id="bGo">Start etapu</button>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="screen" id="sQuiz">
+    <div class="vhead" style="padding-bottom:30px"><h1 style="font-size:24px">Quiz</h1><div class="sub">+300 pkt za dobrą odpowiedź</div></div>
+    <div class="card fact" id="qQ" style="font-size:17px"></div>
+    <button class="btn ghost qopt" data-q="0"></button>
+    <button class="btn ghost qopt" data-q="1"></button>
+    <button class="btn ghost qopt" data-q="2"></button>
+  </div>
+
+  <!-- WYNIK -->
+  <div class="screen" id="sResult">
+    <div class="vhead" style="padding-bottom:30px"><h1 id="rTitle" style="font-size:26px"></h1><div class="sub" id="rSub"></div></div>
+    <div class="stars" id="rStars"></div>
+    <div class="big" id="rScore"></div>
+    <div class="card fact" id="rDetail"></div>
+    <button class="btn" id="bNext"></button>
+  </div>
+
+  <!-- FINAŁ -->
+  <div class="screen" id="sFinal">
+    <div class="vhead"><div class="badge">🏆</div><h1>Wszystkie kursy<br>zaliczone!</h1><div class="sub">mistrz górskich dostaw</div></div>
+    <div class="big" id="fScore"></div>
+    <div class="card fact">Amarok znaczy „wilk" w mitologii Inuitów — i po tych 4 etapach wiesz już dlaczego: w górach czuje się jak u siebie. 🐺</div>
+    <button class="btn" id="bAgain">Zagraj od nowa</button>
+  </div>
+
+  <div id="wmfoot">Wersja demonstracyjna · grafiki poglądowe</div>
+</div></div>
+
+<script>
+"use strict";
+/* ================= ETAPY ================= */
+const LEVELS=[
+ {name:"Pogórze",sub:"etap 1 · rozgrzewka",len:1800,mult:0.7,canGap:170,canH:[1.2,3.5],
+  nRamp:3,nDrop:1,nWash:1,nMega:1,nTurbo:1,
+  fact:"Nazwa <b>Amarok</b> pochodzi z mitologii Inuitów i oznacza <b>wielkiego wilka</b>. Pierwsza generacja zadebiutowała w <b>2010 roku</b> jako pierwszy pickup zbudowany przez Volkswagena od podstaw.",
+  quiz:{q:"Co oznacza nazwa „Amarok” w mitologii Inuitów?",a:["Wielki wilk","Biały niedźwiedź","Lodowy wiatr"],ok:0}},
+ {name:"Beskidy",sub:"etap 2 · robi się stromo",len:2200,mult:0.95,canGap:200,canH:[1.5,4.5],
+  nRamp:4,nDrop:2,nWash:2,nMega:1,nTurbo:1,
+  fact:"Pierwszą generację Amaroka produkowano w <b>Argentynie</b> (General Pacheco), a od 2012 r. także w <b>Hanowerze</b>. Jako pierwszy pickup w swojej klasie dostał <b>8-biegową skrzynię automatyczną</b>.",
+  quiz:{q:"Jaką skrzynię — jako pierwszy pickup w klasie — dostał Amarok?",a:["6-biegową DSG","8-biegowy automat","CVT"],ok:1}},
+ {name:"Tatry",sub:"etap 3 · wysokie góry",len:2600,mult:1.2,canGap:240,canH:[2,5.5],
+  nRamp:5,nDrop:3,nWash:2,nMega:2,nTurbo:2,
+  fact:"Zanim Amarok trafił do salonów, sprawdził się w boju: pojazdy przedprodukcyjne pracowały jako <b>auta techniczne Rajdu Dakar 2010</b> — jednego z najtrudniejszych rajdów świata.",
+  quiz:{q:"W jakim rajdzie pomagały przedprodukcyjne Amaroki w 2010 r.?",a:["Rajd Monte Carlo","Rajd Dakar","Rajd Polski"],ok:1}},
+ {name:"Andy",sub:"etap 4 · finał w ojczyźnie",len:3000,mult:1.45,canGap:280,canH:[2.5,6.5],
+  nRamp:6,nDrop:4,nWash:3,nMega:2,nTurbo:2,
+  fact:"Finał w Andach nieprzypadkowo — to góry Argentyny, gdzie narodziła się pierwsza generacja. Obecny Amarok (od 2022) powstaje we współpracy z Fordem w <b>RPA</b>: ładowność ok. <b>1,19 t</b>, uciąg <b>3,5 t</b>, brodzenie <b>800 mm</b>.",
+  quiz:{q:"Gdzie produkowana jest obecna generacja Amaroka?",a:["W Argentynie","W Niemczech","W RPA"],ok:2}}
+];
+const BOXES0=6, FUEL0=76, FUEL_CAN=30;
+const G=9.81, AIRG=6.6, PXM=9, W=430, H=696, GRAB=12;
+
+/* ================= STAN ================= */
+const S={st:"menu",lvl:0,x:0,e:0,v:0,vy:0,pvy:0,air:false,pitch:0,om:0,pAng:0,rotAcc:0,
+ t:0,score:0,fuel:FUEL0,crates:[],gas:false,brake:false,cans:[],turbos:[],feats:[],got:0,
+ parts:[],dust:[],airT:0,toastT:0,shake:0,rope:0,ropeC:null,win:false,failWhy:"",
+ stress:0,tCharge:0,tTime:0,crashT:0,spillT:0};
+function LV(){return LEVELS[S.lvl];}
+function wrap(a){while(a>Math.PI)a-=2*Math.PI;while(a<-Math.PI)a+=2*Math.PI;return a;}
+
+/* ---------- teren ---------- */
+function smooth(t){t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);}
+function baseTerr(x){
+ const m=LV().mult;
+ const f=Math.min(1,Math.max(0,(x-60)/700));
+ const ease=Math.min(1,Math.max(0,x/70));
+ return ease*m*( (2.0+2.8*f)*Math.sin(x/38)
+              + (2.6+3.8*f)*Math.sin(x/91+2.1)
+              + (0.8+1.3*f)*Math.sin(x/21.5+5.2) );
+}
+function terr(x){
+ let e=baseTerr(x);
+ for(const F of S.feats){
+  if(F.t==="ramp"||F.t==="mega"){const d=x-F.x;
+   if(Math.abs(d)<F.w*4)e+=F.h*Math.exp(-d*d/(2*F.w*F.w));}
+  else if(F.t==="drop"){e-=F.h*smooth((x-F.x)/F.w);}
+  else if(F.t==="wash"){if(x>F.x&&x<F.x+F.len)
+   e+=0.34*Math.sin(x*2.2)*smooth((x-F.x)/8)*smooth((F.x+F.len-x)/8);}
+ }
+ return e;
+}
+function slope(x){const d=0.6;return (terr(x+d)-terr(x-d))/(2*d);}
+
+function genFeats(){
+ const L=LV();S.feats=[];const used=[];
+ const place=(min,max)=>{for(let tries=0;tries<60;tries++){
+  const x=min+Math.random()*(max-min);
+  if(used.every(u=>Math.abs(u-x)>120)){used.push(x);return x;}}return null;};
+ for(let i=0;i<L.nRamp;i++){const x=place(240,L.len-200);
+  if(x)S.feats.push({t:"ramp",x,w:6+Math.random()*3,h:2.4+S.lvl*0.7});}
+ for(let i=0;i<L.nMega;i++){const x=place(380,L.len-260);
+  if(x)S.feats.push({t:"mega",x,w:14+Math.random()*4,h:5+S.lvl*1.2});}
+ for(let i=0;i<L.nDrop;i++){const x=place(320,L.len-240);
+  if(x)S.feats.push({t:"drop",x,w:5,h:3+S.lvl*0.9});}
+ for(let i=0;i<L.nWash;i++){const x=place(210,L.len-190);
+  if(x)S.feats.push({t:"wash",x,len:45+Math.random()*25});}
+}
+function resetLevel(){
+ genFeats();
+ S.x=0;S.e=terr(0);S.v=0;S.vy=0;S.pvy=0;S.air=false;S.pitch=0;S.om=0;S.pAng=0;S.rotAcc=0;
+ S.t=0;S.fuel=FUEL0;S.got=0;S.parts=[];S.dust=[];S.airT=0;S.shake=0;
+ S.rope=0;S.ropeC=null;S.stress=0;S.tCharge=0;S.tTime=0;S.crashT=0;S.spillT=0;
+ S.crates=[];for(let i=0;i<BOXES0;i++)S.crates.push({by:0,bvy:0});
+ const L=LV();
+ S.cans=[];let cx=150;
+ while(cx<L.len-140){const h=L.canH[0]+Math.random()*(L.canH[1]-L.canH[0]);
+  S.cans.push({x:cx,e:terr(cx)+h,hit:false});cx+=L.canGap+Math.random()*110;}
+ S.turbos=[];for(let i=0;i<L.nTurbo;i++){
+  const tx=300+Math.random()*(L.len-500);
+  S.turbos.push({x:tx,e:terr(tx)+1.6+Math.random()*3,hit:false});}
+ tBtn();
+}
+
+/* ================= EKRANY ================= */
+const $=id=>document.getElementById(id);
+function show(id){["sStory","sQuiz","sResult","sFinal"].forEach(s=>$(s).classList.toggle("on",s===id));
+ const drive=(id===null);$("hud").style.display=drive?"block":"none";$("ctrl").style.display=drive?"flex":"none";}
+function story(){
+ const L=LV();
+ $("stBadge").textContent=S.lvl+1;$("stTitle").textContent=L.name;$("stSub").textContent=L.sub;
+ $("stFact").innerHTML=L.fact;
+ $("stMeta").innerHTML=`<span class="chip">Trasa: <b>${L.len} m</b></span>
+  <span class="chip">Hopy: <b>${L.nRamp}</b></span><span class="chip">Górki: <b>${L.nMega}</b></span>
+  <span class="chip">Urwiska: <b>${L.nDrop}</b></span><span class="chip">Tarka: <b>${L.nWash}</b></span>`;
+ show("sStory");S.st="story";
+}
+$("bGo").onclick=()=>{resetLevel();show(null);S.st="drive";};
+$("bAgain").onclick=()=>{S.lvl=0;S.score=0;story();};
+$("bNext").onclick=()=>{
+ if(!S.win){story();return;}
+ if(S.lvl<LEVELS.length-1){S.lvl++;story();}
+ else{$("fScore").textContent=Math.round(S.score)+" pkt";show("sFinal");S.st="final";}
+};
+document.querySelectorAll(".qopt").forEach(b=>b.onclick=()=>{
+ const ok=+b.dataset.q===LV().quiz.ok;if(ok)S.score+=300;
+ showResult(true,ok);});
+
+/* ================= STEROWANIE ================= */
+const hold=(el,k)=>{el.addEventListener("pointerdown",e=>{e.preventDefault();S[k]=true;});
+ ["pointerup","pointerleave","pointercancel"].forEach(ev=>el.addEventListener(ev,e=>{e.preventDefault();S[k]=false;}));
+ el.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});};
+hold($("gas"),"gas");hold($("brake"),"brake");
+$("turbo").addEventListener("pointerdown",e=>{e.preventDefault();
+ if(S.tCharge>0&&S.tTime<=0&&S.st==="drive"){S.tCharge--;S.tTime=2.6;tBtn();
+  toast("🌀 TURBO! Trzymaj się — pali 3× więcej!");}});
+function tBtn(){const b=$("turbo");$("tCnt").textContent="×"+S.tCharge;
+ b.disabled=!(S.tCharge>0&&S.tTime<=0);}
+addEventListener("keydown",e=>{if(e.key==="ArrowUp"||e.key==="ArrowRight")S.gas=true;
+ if(e.key==="ArrowDown"||e.key==="ArrowLeft")S.brake=true;
+ if(e.key===" "&&S.tCharge>0&&S.tTime<=0&&S.st==="drive"){S.tCharge--;S.tTime=2.6;tBtn();}});
+addEventListener("keyup",e=>{if(e.key==="ArrowUp"||e.key==="ArrowRight")S.gas=false;
+ if(e.key==="ArrowDown"||e.key==="ArrowLeft")S.brake=false;});
+document.addEventListener("contextmenu",e=>e.preventDefault());
+document.addEventListener("selectstart",e=>e.preventDefault());
+document.addEventListener("gesturestart",e=>e.preventDefault());
+let lastTouch=0;document.addEventListener("touchend",e=>{const n=Date.now();
+ if(n-lastTouch<350)e.preventDefault();lastTouch=n;},{passive:false});
+const cv=$("cv"),ctx=cv.getContext("2d");
+function fitCanvas(){
+ const app=document.getElementById("app"),dpr=Math.min(3,window.devicePixelRatio||1);
+ const aw=app.clientWidth||430,ah=app.clientHeight||696;
+ cv.width=Math.round(aw*dpr);cv.height=Math.round(ah*dpr);
+ ctx.setTransform(cv.width/W,0,0,cv.height/H,0,0);
+}
+fitCanvas();addEventListener("resize",fitCanvas);
+cv.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
+cv.addEventListener("pointerdown",e=>{
+ e.preventDefault();if(S.st!=="drive")return;
+ const r=cv.getBoundingClientRect();
+ const px=(e.clientX-r.left)*(W/r.width), py=(e.clientY-r.top)*(H/r.height);
+ const camX=S.x-14, camE=camEget();
+ let best=null,bd=48,isT=false;
+ for(const c of S.cans){if(c.hit)continue;
+  const cx=(c.x-camX)*PXM, cy=H*0.55-(c.e-camE)*PXM;
+  const d=Math.hypot(cx-px,cy-py);if(d<bd){bd=d;best=c;isT=false;}}
+ for(const c of S.turbos){if(c.hit)continue;
+  const cx=(c.x-camX)*PXM, cy=H*0.55-(c.e-camE)*PXM;
+  const d=Math.hypot(cx-px,cy-py);if(d<bd){bd=d;best=c;isT=true;}}
+ if(best){
+  const dist=Math.hypot(best.x-S.x,best.e-S.e);
+  if(dist<=GRAB){best.hit=true;S.rope=0.5;S.ropeC={x:best.x,e:best.e};
+   if(isT){S.tCharge=Math.min(2,S.tCharge+1);tBtn();S.score+=40;toast("🌀 Turbo w kieszeni! Aktywuj przyciskiem.");}
+   else{S.got++;S.fuel=Math.min(100,S.fuel+FUEL_CAN);S.score+=50;toast("🫴 Kanister złapany w locie! +paliwo, +50 pkt");}}
+  else toast("✋ Za daleko! Podjedź bliżej ("+Math.round(dist)+" m)");
+ }
+});
+function camEget(){return S.e*0.6+terr(S.x)*0.4;}
+
+/* ================= SKRZYNKI (fizyka paki) ================= */
+function crateImpulse(v){for(const c of S.crates)c.bvy+=v*(0.7+Math.random()*0.6);}
+function crateEject(worldImpulse){
+ if(!S.crates.length)return;
+ S.crates.pop();
+ S.parts.push({x:S.x,e:S.e+2.2,vx:S.v*0.5-2+Math.random()*4,vy:(worldImpulse||5)+Math.random()*3,t:0,spin:4+Math.random()*4});
+}
+function updateCrates(dt){
+ for(let i=S.crates.length-1;i>=0;i--){const c=S.crates[i];
+  c.bvy-=150*dt;                 // "grawitacja" ku pace (px/s²)
+  c.by+=c.bvy*dt;
+  if(c.by<0){c.by=0;c.bvy*=-0.25;}
+  if(c.by>26){S.crates.splice(i,1);
+   S.parts.push({x:S.x,e:S.e+2.5,vx:S.v*0.5-3+Math.random()*6,vy:6+Math.random()*3,t:0,spin:5});
+   toast("📦 Skrzynka wyleciała za burtę! Jedź płynniej.");}
+ }
+ /* w locie do góry nogami towar się wysypuje */
+ if(S.air&&Math.abs(wrap(S.pitch))>1.5){
+  S.spillT+=dt;
+  if(S.spillT>0.22&&S.crates.length){S.spillT=0;crateEject(3);
+   toast("📦 Towar sypie się z odwróconej paki!");}
+ }else S.spillT=0;
+}
+
+/* ================= FIZYKA ================= */
+function updatePhys(dt){
+ const s=slope(S.x),ang=Math.atan(s);
+ const turboOn=S.tTime>0;
+ if(!S.air){
+  let a=0;
+  if(S.gas&&S.fuel>0)a+=7.5;
+  if(turboOn&&S.fuel>0)a+=9;
+  if(S.brake)a-=11;
+  a-=G*Math.sin(ang)*0.92;
+  a-=0.018*S.v*S.v/30+0.15;
+  S.v=Math.max(0,Math.min(turboOn?42:34,S.v+a*dt));
+  S.x+=S.v*Math.cos(ang)*dt;
+  const eNew=terr(S.x), eBall=S.e+S.vy*dt-0.5*AIRG*dt*dt;
+  if(eBall>eNew+0.05&&S.v>3){ /* start lotu */
+   S.air=true;S.vy=S.v*s;S.e=eBall;S.vy-=AIRG*dt;
+   S.om=Math.max(-1.6,Math.min(1.6,(ang-S.pAng)/Math.max(dt,0.001)*0.5));
+   S.rotAcc=0;
+   crateImpulse(40+S.v*1.2);
+  }else{
+   S.pvy=S.vy;S.pAng=ang;S.e=eNew;S.vy=S.v*s;
+   S.pitch+=(ang-S.pitch)*12*dt;
+   const jerk=Math.abs(S.vy-S.pvy)/Math.max(dt,0.001);
+   if(jerk>20&&S.v>7){S.stress+=(jerk-20)*dt*0.055;S.shake=Math.max(S.shake,0.25);
+    crateImpulse(jerk*1.1*dt*14);}
+  }
+ }else{
+  /* LOT: przód cięższy + sterowanie obrotem */
+  S.airT+=dt;
+  S.om-=0.55*dt;                          // nos naturalnie opada
+  if(S.gas)S.om+=2.4*dt;                  // gaz = rotacja do tyłu (przód w górę)
+  if(S.brake)S.om-=2.4*dt;                // hamulec = nurkowanie
+  S.om=Math.max(-4,Math.min(4,S.om));
+  S.pitch+=S.om*dt;S.rotAcc+=Math.abs(S.om*dt);
+  S.x+=S.v*dt;S.vy-=AIRG*dt;S.e+=S.vy*dt;
+  const eT=terr(S.x);
+  if(S.e<=eT){ landing(); }
+ }
+ updateCrates(dt);
+ /* stres -> wypadanie */
+ if(S.stress>=1&&S.crates.length){S.stress=0.35;crateEject(5);
+  toast("📦 Ładunek podskoczył i wypadł! Zwolnij na tarce.");}
+ S.stress=Math.max(0,S.stress-dt*0.16);
+ S.tTime=Math.max(0,S.tTime-dt);if(S.tTime===0)tBtn();
+ S.fuel-=(0.85+(S.gas?1.5:0)+(turboOn?2.7:0))*dt*0.62;
+ for(const c of S.cans){if(c.hit)continue;
+  if(Math.abs(c.x-S.x)<2.2&&Math.abs(c.e-S.e)<2.6){c.hit=true;S.got++;
+   S.fuel=Math.min(100,S.fuel+FUEL_CAN);S.score+=50;toast("⛽ Kanister! +paliwo, +50 pkt");}}
+ for(const c of S.turbos){if(c.hit)continue;
+  if(Math.abs(c.x-S.x)<2.4&&Math.abs(c.e-S.e)<2.8){c.hit=true;
+   S.tCharge=Math.min(2,S.tCharge+1);tBtn();S.score+=40;toast("🌀 Turbo zebrane! Aktywuj przyciskiem.");}}
+ updateParts(dt);
+ S.score+=S.v*dt*0.8;
+ S.t+=dt;S.rope=Math.max(0,S.rope-dt);
+ if(S.x>=LV().len)finish(true);
+ else if(S.fuel<=0&&S.v<0.5)finish(false,"fuel");
+}
+function landing(){
+ const angT=Math.atan(slope(S.x));
+ const diff=wrap(S.pitch-angT);
+ const impact=(S.v*slope(S.x))-S.vy;
+ S.e=terr(S.x);
+ /* DACHOWANIE: na masce, na dachu lub kosmiczny impakt */
+ if(Math.abs(diff)>1.35||diff<-0.72||impact>17){startCrash(diff);return;}
+ S.air=false;S.vy=0;
+ const flip=S.rotAcc>5.6;
+ if(flip){S.score+=350;toast("🔄 BACKFLIP na koła! +350 pkt");}
+ else if(S.airT>0.45){S.score+=Math.round(S.airT*80);
+  toast("🛬 Lot "+S.airT.toFixed(1)+"s"+(Math.abs(diff)<0.22?" — czyste lądowanie!":"")+" +"+Math.round(S.airT*80)+" pkt");}
+ if(diff>0.9){ /* na zderzak tylny */
+  S.shake=0.8;S.v*=0.4;crateEject(6);crateEject(6);
+  toast("💥 Lądowanie na tyle! Wypadły 2 skrzynki.");
+ }else if(Math.abs(diff)>0.35||impact>10.5){ /* krzywo lub twardo */
+  S.shake=0.6;S.v*=0.7;crateImpulse(90);
+  if(impact>8)crateEject(5);
+  toast("💥 Twarde lądowanie — przód przyjął cios! Ustawiaj auto gazem/hamulcem w locie.");
+ }else if(impact>6){crateImpulse(60);S.shake=0.3;}
+ S.pitch=wrap(S.pitch);S.airT=0;S.rotAcc=0;
+}
+function startCrash(diff){
+ S.st="crash";S.crashT=1.7;S.shake=1;
+ S.om=(diff<0?-1:1)*(3+Math.random());
+ while(S.crates.length)crateEject(6);
+ for(let i=0;i<6;i++)S.dust.push({x:S.x-1+Math.random()*3,e:S.e+0.5,vx:-3+Math.random()*6,vy:2+Math.random()*4,t:0});
+ toast("🚨 DACHOWANIE! Auto na dachu…");
+}
+function updateCrash(dt){
+ S.crashT-=dt;
+ const eT=terr(S.x);
+ if(S.e>eT+0.05){S.vy-=AIRG*dt;S.e+=S.vy*dt;S.x+=S.v*dt;S.pitch+=S.om*dt;}
+ else{S.e=eT;S.vy=0;S.v=Math.max(0,S.v-9*dt);S.x+=S.v*dt;
+  S.om*=0.94;S.pitch+=S.om*dt;
+  if(Math.random()<0.4)S.dust.push({x:S.x-1+Math.random()*2,e:S.e+0.3,vx:-2+Math.random()*4,vy:1+Math.random()*2.5,t:0});}
+ updateParts(dt);
+ if(S.crashT<=0){S.st="drive";finish(false,"roll");}
+}
+function updateParts(dt){
+ for(const p of S.parts){p.t+=dt;p.x+=p.vx*dt;p.vy-=AIRG*dt;p.e+=p.vy*dt;
+  if(p.e<terr(p.x)){p.e=terr(p.x);p.vy*=-0.35;p.vx*=0.6;}}
+ S.parts=S.parts.filter(p=>p.t<3.5);
+ for(const d of S.dust){d.t+=dt;d.x+=d.vx*dt;d.e+=d.vy*dt;d.vy-=2*dt;}
+ S.dust=S.dust.filter(d=>d.t<1.2);
+}
+
+function finish(win,why){
+ if(S.st!=="drive")return;S.win=win;S.failWhy=why||"";
+ if(win){S.st="quiz";const q=LV().quiz;$("qQ").innerHTML=q.q;
+  document.querySelectorAll(".qopt").forEach((b,i)=>{b.textContent=["A","B","C"][i]+". "+q.a[i];});
+  show("sQuiz");}
+ else{S.st="result";showResult(false,false);}
+}
+function showResult(win,quizOk){
+ S.st="result";
+ const L=LV();const nB=S.crates.length;let stars=0,timeB=0,boxB=0;
+ if(win){
+  const par=L.len/16;
+  timeB=Math.max(0,Math.round((par-S.t)*15));
+  boxB=nB*250;
+  S.score+=timeB+boxB+Math.round(S.fuel*3);
+  stars=(nB>=6?3:nB>=4?2:nB>=1?1:0);
+ }
+ $("rTitle").textContent=win?L.name+" zaliczone!":(S.failWhy==="roll"?"Dachowanie!":"Koniec paliwa…");
+ $("rSub").textContent="Amarok 4Motion · "+L.sub;
+ $("rStars").textContent=win?("★".repeat(stars)+"☆".repeat(3-stars)):"☆☆☆";
+ $("rScore").textContent=Math.round(S.score)+" pkt";
+ $("rDetail").innerHTML=win
+  ?`Czas: <b>${S.t.toFixed(1)} s</b> (bonus +${timeB})<br>Skrzynki: <b>${nB}/${BOXES0}</b> (+${boxB})<br>Kanistry: ${S.got} · Rezerwa: +${Math.round(S.fuel*3)}<br>Quiz: ${quizOk?"<b style='color:#8FBF8A'>poprawnie! +300 pkt</b>":"pudło — ale już wiesz na przyszłość 😉"}<br><br>${nB===BOXES0?"🏆 Komplet towaru — mistrz mocowania ładunku!":"Wskazówka: w locie ustaw auto równolegle do zbocza — gaz unosi przód, hamulec go opuszcza."}`
+  :(S.failWhy==="roll"
+   ?"Auto na dachu, towar po zboczu. Pamiętaj: <b>przód sam opada w locie</b> — krótkie dotknięcie gazu w powietrzu prostuje auto do lądowania na kołach."
+   :"Bak pusty w górach. Kanistry możesz też <b>stuknąć palcem</b>, gdy świeci obwódka. I oszczędzaj turbo — pali 3× więcej.");
+ $("bNext").textContent=win?(S.lvl<LEVELS.length-1?"Etap "+(S.lvl+2)+": "+LEVELS[S.lvl+1].name+" →":"Zobacz finał"):"Spróbuj ponownie";
+ show("sResult");
+}
+
+/* ================= TOAST ================= */
+function toast(html){$("toast").innerHTML=html;$("toast").style.display="block";S.toastT=2.8;}
+
+/* ================= RENDER ================= */
+/* ---- dekoracje: drzewa i krzaki (czucie prędkości) ---- */
+function frac(v){return v-Math.floor(v);}
+function drawDecor(camX,camE){
+ const k0=Math.floor(camX/15)-1, k1=Math.floor((camX+W/PXM)/15)+1;
+ for(let k=k0;k<=k1;k++){
+  const r=frac(Math.sin(k*127.1+S.lvl*31)*43758.5453);
+  if(r>0.72)continue;                       // przerwa
+  const x0=k*15+r*9;
+  if(x0<10||x0>LV().len+30)continue;
+  let clear=true;                            // nie sadź na hopach/urwiskach
+  for(const F of S.feats)if(Math.abs(x0-F.x)<(F.w||20)*2.2){clear=false;break;}
+  if(!clear)continue;
+  const px=sx(x0,camX), py=sy(terr(x0),camE);
+  const r2=frac(r*97.13);
+  if(r<0.34){ /* świerk */
+   const h=26+r2*18, snow=S.lvl>=2;
+   ctx.fillStyle="#4A3A28";ctx.fillRect(px-2,py-6,4,7);
+   ctx.fillStyle=["#2E5232","#33502E","#2C4A34","#28402E"][S.lvl];
+   for(let i=0;i<3;i++){const w=13-i*3,yy=py-8-i*(h/3.4);
+    ctx.beginPath();ctx.moveTo(px,yy-h/2.6);ctx.lineTo(px-w,yy);ctx.lineTo(px+w,yy);ctx.closePath();ctx.fill();}
+   if(snow){ctx.fillStyle="#E8EEF4";ctx.beginPath();
+    ctx.moveTo(px,py-8-2*(h/3.4)-h/2.6);ctx.lineTo(px-5,py-6-2*(h/3.4));ctx.lineTo(px+5,py-6-2*(h/3.4));ctx.closePath();ctx.fill();}
+  }else if(r<0.52){ /* drzewo liściaste */
+   ctx.fillStyle="#4A3A28";ctx.fillRect(px-2.5,py-16,5,17);
+   ctx.fillStyle=["#4E7A3E","#5E7A3A","#7A7A46","#8A7A4E"][S.lvl];
+   ctx.beginPath();ctx.arc(px,py-24,11+r2*5,0,7);ctx.fill();
+   ctx.beginPath();ctx.arc(px-8,py-18,7,0,7);ctx.fill();
+   ctx.beginPath();ctx.arc(px+8,py-18,7,0,7);ctx.fill();
+  }else{ /* krzak / kamień */
+   if(r2<0.6){ctx.fillStyle=["#44663C","#566438","#5E6650","#6E6448"][S.lvl];
+    ctx.beginPath();ctx.arc(px-4,py-3,5,0,7);ctx.arc(px+2,py-5,6,0,7);ctx.arc(px+7,py-2,4,0,7);ctx.fill();}
+   else{ctx.fillStyle="#6E6E76";ctx.beginPath();
+    ctx.moveTo(px-6,py+1);ctx.lineTo(px-2,py-6);ctx.lineTo(px+5,py-4);ctx.lineTo(px+7,py+1);ctx.closePath();ctx.fill();}
+  }
+ }
+}
+
+function sx(x,camX){return (x-camX)*PXM;}
+function sy(e,camE){return H*0.55-(e-camE)*PXM;}
+function drawScene(){
+ const camX=S.x-14, camE=camEget();
+ const g=ctx.createLinearGradient(0,0,0,H);
+ const duskShift=S.lvl*0.08;
+ g.addColorStop(0,"#12263E");g.addColorStop(0.5-duskShift,"#2C4A66");
+ g.addColorStop(0.78-duskShift,"#C97F4A");g.addColorStop(1,"#8A5A38");
+ ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+ ctx.fillStyle="#F4ECD8";ctx.beginPath();ctx.arc(W-90,110,26,0,7);ctx.fill();
+ ctx.fillStyle="#1C3450";ctx.beginPath();ctx.moveTo(0,H);
+ for(let px=0;px<=W;px+=8){const wx=camX*0.25+px/PXM*2.5;
+  ctx.lineTo(px,H*0.55-(18+(10+4*S.lvl)*Math.sin(wx/60)+6*Math.sin(wx/23+3))*PXM*0.35);}
+ ctx.lineTo(W,H);ctx.fill();
+ if(S.lvl>=2){ctx.fillStyle="#E8EEF4";
+  for(let px=0;px<=W;px+=8){const wx=camX*0.25+px/PXM*2.5;
+   const my=H*0.55-(18+(10+4*S.lvl)*Math.sin(wx/60)+6*Math.sin(wx/23+3))*PXM*0.35;
+   if(Math.sin(wx/60)>0.75)ctx.fillRect(px,my,8,7);}}
+ const groundCol=["#3E5A3A","#46543A","#5A5A52","#6E5E48"][S.lvl];
+ ctx.fillStyle=groundCol;ctx.beginPath();ctx.moveTo(0,H);
+ for(let px=0;px<=W;px+=4){const wx=camX+px/PXM;ctx.lineTo(px,sy(terr(wx),camE));}
+ ctx.lineTo(W,H);ctx.fill();
+ ctx.strokeStyle=["#5E7E52","#6B7A52","#7C7C70","#8C7A5E"][S.lvl];ctx.lineWidth=4;ctx.beginPath();
+ for(let px=0;px<=W;px+=4){const wx=camX+px/PXM;const y=sy(terr(wx),camE);
+  px===0?ctx.moveTo(px,y):ctx.lineTo(px,y);}
+ ctx.stroke();
+ drawDecor(camX,camE);
+ for(const F of S.feats){
+  const sxp=sx(F.x-48,camX);if(sxp<-30||sxp>W+30)continue;
+  const syp=sy(terr(F.x-48),camE);
+  ctx.strokeStyle="#4A4A50";ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(sxp,syp);ctx.lineTo(sxp,syp-30);ctx.stroke();
+  ctx.fillStyle="#E3A72F";ctx.beginPath();
+  ctx.moveTo(sxp,syp-46);ctx.lineTo(sxp-13,syp-26);ctx.lineTo(sxp+13,syp-26);ctx.closePath();ctx.fill();
+  ctx.strokeStyle="#0A0F16";ctx.lineWidth=1.5;ctx.stroke();
+  ctx.fillStyle="#0A0F16";ctx.font="900 13px 'Saira Condensed'";ctx.textAlign="center";
+  ctx.fillText(F.t==="ramp"?"⌃":F.t==="mega"?"⛰":F.t==="drop"?"!":"≈",sxp,syp-29);
+ }
+ const mx=sx(LV().len,camX);
+ if(mx>-40&&mx<W+40){const my=sy(terr(LV().len),camE);
+  ctx.strokeStyle="#F4ECD8";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx,my-52);ctx.stroke();
+  ctx.fillStyle="#D4622A";ctx.fillRect(mx,my-52,26,16);
+  ctx.font="16px serif";ctx.fillText("🏗",mx-24,my-30);}
+ for(const c of S.cans){if(c.hit)continue;const px=sx(c.x,camX);if(px<-24||px>W+24)continue;
+  const py=sy(c.e,camE);
+  if(Math.hypot(c.x-S.x,c.e-S.e)<=GRAB){ctx.strokeStyle="#E3A72F";ctx.lineWidth=2;ctx.setLineDash([4,4]);
+   ctx.beginPath();ctx.arc(px,py,17+Math.sin(S.t*6)*2,0,7);ctx.stroke();ctx.setLineDash([]);}
+  ctx.fillStyle="#D4622A";ctx.fillRect(px-7,py-9,14,16);
+  ctx.fillStyle="#F4ECD8";ctx.fillRect(px-4,py-6,8,4);
+  ctx.fillStyle="#8A3A1A";ctx.fillRect(px-2,py-12,7,4);}
+ for(const c of S.turbos){if(c.hit)continue;const px=sx(c.x,camX);if(px<-24||px>W+24)continue;
+  const py=sy(c.e,camE);
+  if(Math.hypot(c.x-S.x,c.e-S.e)<=GRAB){ctx.strokeStyle="#B79AF0";ctx.lineWidth=2;ctx.setLineDash([4,4]);
+   ctx.beginPath();ctx.arc(px,py,18+Math.sin(S.t*6)*2,0,7);ctx.stroke();ctx.setLineDash([]);}
+  ctx.save();ctx.translate(px,py);ctx.rotate(S.t*3);
+  ctx.strokeStyle="#7A4FD4";ctx.lineWidth=4;
+  ctx.beginPath();ctx.arc(0,0,9,0.4,2.4);ctx.stroke();
+  ctx.beginPath();ctx.arc(0,0,9,3.5,5.5);ctx.stroke();ctx.restore();
+  ctx.fillStyle="#B79AF0";ctx.font="900 9px 'Saira Condensed'";ctx.textAlign="center";
+  ctx.fillText("TURBO",px,py+22);}
+ if(S.rope>0&&S.ropeC){ctx.strokeStyle="#E3A72F";ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(sx(S.x,camX),sy(S.e,camE)-18);
+  ctx.lineTo(sx(S.ropeC.x,camX),sy(S.ropeC.e,camE));ctx.stroke();}
+ for(const p of S.parts){const px=sx(p.x,camX),py=sy(p.e,camE);
+  ctx.save();ctx.translate(px,py);ctx.rotate(p.t*(p.spin||4));
+  ctx.fillStyle="#B8905A";ctx.fillRect(-6,-6,12,12);ctx.strokeStyle="#7A5A34";ctx.strokeRect(-6,-6,12,12);ctx.restore();}
+ for(const d of S.dust){const px=sx(d.x,camX),py=sy(d.e,camE);
+  ctx.fillStyle="rgba(180,160,130,"+(1-d.t/1.2)*0.5+")";
+  ctx.beginPath();ctx.arc(px,py,4+d.t*8,0,7);ctx.fill();}
+ drawAmarok(sx(S.x,camX),sy(S.e,camE),-S.pitch);
+}
+function drawAmarok(px,py,rot){
+ ctx.save();ctx.translate(px,py-10);
+ if(S.shake>0){ctx.translate((Math.random()-0.5)*7*S.shake,(Math.random()-0.5)*7*S.shake);S.shake=Math.max(0,S.shake-0.04);}
+ ctx.rotate(rot);
+ if(S.tTime>0){ctx.fillStyle="#B79AF0";
+  for(let i=0;i<3;i++)ctx.fillRect(-40-Math.random()*12,-4+i*4,8+Math.random()*8,3);}
+ if(!S.air&&S.st!=="crash"){ctx.fillStyle="#00000038";ctx.beginPath();ctx.ellipse(0,14,34,6,0,0,7);ctx.fill();}
+ ctx.fillStyle="#2E3338";ctx.fillRect(-34,-8,30,14);
+ for(let i=0;i<S.crates.length;i++){const c=S.crates[i];
+  const bx=-32+(i%3)*10, by=-14-Math.floor(i/3)*9-c.by;
+  ctx.fillStyle="#B8905A";ctx.fillRect(bx,by,9,8);
+  ctx.strokeStyle="#7A5A34";ctx.lineWidth=1;ctx.strokeRect(bx,by,9,8);}
+ ctx.fillStyle="#20262C";
+ ctx.beginPath();ctx.moveTo(-6,-8);ctx.lineTo(-4,-20);ctx.lineTo(12,-20);ctx.lineTo(20,-9);
+ ctx.lineTo(34,-7);ctx.lineTo(34,6);ctx.lineTo(-6,6);ctx.closePath();ctx.fill();
+ ctx.fillStyle="#8FB4CC";ctx.beginPath();ctx.moveTo(-2,-18);ctx.lineTo(10,-18);ctx.lineTo(16,-10);ctx.lineTo(-2,-10);ctx.closePath();ctx.fill();
+ ctx.fillStyle="#D4622A";ctx.fillRect(-34,4,68,3);
+ ctx.fillStyle="#F4ECD8";ctx.fillRect(31,-5,3,4);
+ for(const wx of [-24,22]){ctx.fillStyle="#0D0D10";ctx.beginPath();ctx.arc(wx,10,10,0,7);ctx.fill();
+  ctx.fillStyle="#3A3A40";ctx.beginPath();ctx.arc(wx,10,5.5,0,7);ctx.fill();
+  ctx.fillStyle="#8C949C";ctx.beginPath();ctx.arc(wx,10,2,0,7);ctx.fill();}
+ ctx.restore();
+}
+
+/* ================= HUD ================= */
+function drawHUD(){
+ $("hLvl").textContent="⛰ "+(S.lvl+1)+"/4";
+ $("hDist").textContent=Math.min(LV().len,Math.round(S.x))+"/"+LV().len+" m";
+ $("hScore").textContent=Math.round(S.score)+" pkt";
+ $("hSpeed").textContent=Math.round(S.v*3.6)+" km/h";
+ $("hF").style.width=Math.max(0,S.fuel)+"%";
+ $("hF").style.background=S.fuel<25?"var(--bad)":"var(--amber)";
+ $("hBox").textContent=S.crates.length+"/"+BOXES0;
+ $("hSt").style.width=Math.min(100,S.stress*100)+"%";
+}
+
+/* ================= PĘTLA ================= */
+let last=performance.now();
+function loop(t){
+ const dt=Math.min(0.04,(t-last)/1000);last=t;
+ if(S.st==="drive"){updatePhys(dt);drawScene();drawHUD();}
+ else if(S.st==="crash"){updateCrash(dt);drawScene();drawHUD();}
+ if(S.toastT>0){S.toastT-=dt;if(S.toastT<=0)$("toast").style.display="none";}
+ requestAnimationFrame(loop);
+}
+S.lvl=0;S.score=0;story();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
