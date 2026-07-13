@@ -6,8 +6,9 @@
 <title>Amarok: Górski Kurs</title>
 <link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700;900&family=Saira:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root{--navy:#0B2A4A;--navy-d:#071D34;--cream:#F4ECD8;--amber:#E3A72F;--orange:#D4622A;
-    --ok:#5E8C5A;--bad:#B03A3A;--steel:#8C949C;--turbo:#7A4FD4}
+  :root{--navy:#12263E;--navy-d:#0C1B2E;--cream:#F4ECD8;--amber:#E3A72F;--orange:#D4622A;
+    --ok:#5E8C5A;--bad:#B03A3A;--steel:#8C949C;--turbo:#7A4FD4;
+    --sand:#f4f0e6;--grid:rgba(25,50,81,0.05);--navy-main:#193251;--navy-mut:#53677f;--card:#ffffff}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;
     user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-webkit-touch-callout:none}
   *::selection{background:transparent}
@@ -18,27 +19,29 @@
   #app{position:relative;width:min(100vw,62vh);height:min(161.9vw,100vh);max-width:430px;background:#0A0F16;overflow:hidden;box-shadow:0 0 60px #000A}
   canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
   h1,h2{font-family:'Saira Condensed',Impact,'Arial Narrow',sans-serif;text-transform:uppercase;letter-spacing:.03em}
-  .screen{position:absolute;inset:0;display:none;flex-direction:column;padding:18px;background:var(--navy-d);z-index:10;overflow-y:auto}
+  .screen{position:absolute;inset:0;display:none;flex-direction:column;padding:18px;z-index:10;overflow-y:auto;
+    background:var(--sand);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;color:var(--navy-main)}
   .screen.on{display:flex}
-  .vhead{position:relative;background:var(--navy);padding:20px 16px 34px;margin:-18px -18px 14px;text-align:center}
-  .vhead::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:26px;
-    background:var(--navy-d);clip-path:polygon(0 100%,0 55%,50% 0,100% 55%,100% 100%)}
+  .vhead{position:relative;background:var(--navy-main);padding:18px 16px 20px;margin:0 0 6px;text-align:center;
+    border-radius:20px;box-shadow:0 8px 0 rgba(25,50,81,.15)}
   .badge{width:52px;height:52px;border-radius:50%;background:var(--cream);color:var(--navy);
     display:flex;align-items:center;justify-content:center;margin:0 auto 8px;
     font-family:'Saira Condensed';font-weight:900;font-size:17px;border:3px solid var(--amber)}
-  .vhead h1{font-size:29px;font-weight:900;color:var(--cream);line-height:1.05}
-  .vhead .sub{font-size:13px;color:#9FC0DC;letter-spacing:.18em;text-transform:uppercase;margin-top:4px}
-  .btn{display:block;width:100%;border:0;border-radius:10px;padding:14px;margin-top:12px;cursor:pointer;
+  .vhead h1{font-size:27px;font-weight:900;color:#fff;line-height:1.05}
+  .vhead .sub{font-size:12px;color:#9FC0DC;letter-spacing:.16em;text-transform:uppercase;margin-top:3px}
+  .btn{display:block;width:100%;border:0;border-radius:14px;padding:14px;margin-top:12px;cursor:pointer;
     touch-action:manipulation;font-family:'Saira Condensed';font-weight:700;font-size:19px;
-    text-transform:uppercase;letter-spacing:.05em;background:var(--orange);color:#fff}
-  .btn.ghost{background:#1A3050;color:var(--cream);text-align:left;font-size:16px}
-  .btn:active{transform:translateY(2px)}
-  .card{background:#12233A;border-radius:12px;padding:14px;margin-top:12px}
-  .fact{font-size:14.5px;line-height:1.45;color:#E9E2D0}
+    text-transform:uppercase;letter-spacing:.05em;background:linear-gradient(135deg,#ff6b00,#ff8e3c);color:#fff;
+    box-shadow:0 5px 0 #A8431F}
+  .btn.ghost{background:#fff;color:var(--navy-main);text-align:left;font-size:16px;box-shadow:0 5px 0 rgba(25,50,81,.15)}
+  .btn:active{transform:translateY(3px);box-shadow:0 2px 0 #A8431F}
+  .btn.ghost:active{box-shadow:0 2px 0 rgba(25,50,81,.15)}
+  .card{background:var(--card);border:2px solid var(--navy-main);border-radius:18px;padding:14px;margin-top:12px;box-shadow:0 8px 0 rgba(25,50,81,.12)}
+  .fact{font-size:14.5px;line-height:1.45;color:var(--navy-main)}
   .fact b{color:var(--amber)}
   .meta{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-  .chip{background:#0C1828;border-radius:6px;padding:5px 9px;font-size:12px;color:var(--steel)}
-  .chip b{color:var(--cream)}
+  .chip{background:#EDE4D2;border-radius:8px;padding:5px 9px;font-size:12px;color:var(--navy-mut)}
+  .chip b{color:var(--navy-main)}
   #hud{position:absolute;left:0;right:0;top:0;padding:8px 10px;z-index:5;display:none;background:linear-gradient(#0A0F16EE,#0A0F1600)}
   #hud .top{display:flex;justify-content:space-between;font-family:'Saira Condensed';font-weight:700;font-size:15px;color:var(--cream)}
   #hud .row{display:flex;gap:8px;align-items:center;font-size:11px;color:var(--steel);margin-top:4px}
@@ -52,14 +55,33 @@
   #turbo:disabled{background:#2A2A38;color:#5A5A68}
   #toast{position:absolute;left:12px;right:12px;top:92px;z-index:8;background:#0A0F16E8;border-left:4px solid var(--amber);
     border-radius:8px;padding:10px 12px;font-size:13.5px;display:none;line-height:1.35}
-  .stars{font-size:34px;text-align:center;letter-spacing:6px;margin:6px 0}
+    .stars{font-size:34px;text-align:center;letter-spacing:6px;margin:6px 0}
+  .infoBtn{position:absolute;top:12px;right:12px;z-index:30;width:38px;height:38px;border-radius:50%;
+    border:2px solid var(--navy-main);background:#fff;color:var(--navy-main);font-family:'Saira Condensed';
+    font-weight:900;font-size:20px;box-shadow:0 4px 0 rgba(25,50,81,.15);cursor:pointer}
+  .infoBtn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(25,50,81,.15)}
+  #infoOv{position:absolute;inset:0;z-index:40;display:none;flex-direction:column;justify-content:center;
+    padding:22px;background:rgba(12,27,46,.72);backdrop-filter:blur(3px)}
+  #infoOv.on{display:flex}
+  #infoOv .box{background:var(--card);border:2px solid var(--navy-main);border-radius:20px;padding:18px;
+    box-shadow:0 10px 0 rgba(25,50,81,.2);color:var(--navy-main);font-size:14.5px;line-height:1.5}
+  #infoOv .box b{color:var(--orange)}
+  #infoOv h2{font-family:'Saira Condensed';font-size:22px;color:var(--navy-main);margin-bottom:8px}
   .big{font-family:'Saira Condensed';font-weight:900;font-size:44px;text-align:center;color:var(--amber)}
   #wmfoot{position:absolute;left:0;right:0;bottom:2px;z-index:6;pointer-events:none;text-align:center;
     font-size:9.5px;color:#5A6673;letter-spacing:.06em}
+
+  #backMenu{position:absolute;top:10px;left:10px;z-index:60;display:flex;align-items:center;
+    background:#00000066;color:var(--cream);text-decoration:none;font-family:'Saira Condensed';font-weight:700;
+    font-size:13px;padding:6px 12px;border-radius:16px;letter-spacing:.05em;border:1px solid #FFFFFF22}
+  #nameInp{display:block;width:100%;border:0;border-radius:10px;padding:12px;font-size:16px;font-family:'Saira',sans-serif;
+    background:#0C1B2C;color:var(--cream);margin-top:4px;-webkit-user-select:text!important;user-select:text!important}
+  #rankList{margin-top:10px;font-size:14px;line-height:1.65}
 </style>
 </head>
 <body>
 <div id="wrap"><div id="app">
+  <a id="backMenu" href="index.html">‹ Garaż</a>
   <canvas id="cv" width="430" height="696"></canvas>
 
   <div id="hud">
@@ -77,11 +99,23 @@
 
   <!-- CIEKAWOSTKA -->
   <div class="screen" id="sStory">
+    <button class="infoBtn" id="bInfo" title="Instrukcja">ⓘ</button>
     <div class="vhead"><div class="badge" id="stBadge">1</div><h1 id="stTitle"></h1><div class="sub" id="stSub"></div></div>
+    <svg id="introVan" width="270" height="118" viewBox="0 0 300 130" style="display:block;margin:10px auto 4px"></svg>
     <div class="card fact"><b style="letter-spacing:.08em">🐺 CZY WIESZ, ŻE…</b><br><span id="stFact"></span></div>
     <div class="meta" id="stMeta"></div>
-    <div class="card fact" style="font-size:12.5px">🎮 <b>Gaz/Hamulec</b> (↑↓) · w locie gaz unosi przód ⤴, hamulec opuszcza ⤵ — laduj na kołach!<br>⛽ kanister: przejedź lub stuknij palcem · 🌀 turbo: przycisk/spacja (pali 3×) · 📦 jedź płynnie, bo towar wyskoczy</div>
     <button class="btn" id="bGo">Start etapu</button>
+    <div id="infoOv">
+      <div class="box">
+        <h2>🎮 Jak grać</h2>
+        <b>Gaz / Hamulec</b> (↑ ↓) — a w locie gaz unosi przód ⤴, hamulec go opuszcza ⤵, żeby wylądować na kołach.<br><br>
+        ⛽ <b>Kanister</b>: przejedź przez niego albo stuknij palcem, gdy świeci złota obwódka. Bez tankowania nie dojedziesz.<br><br>
+        🌀 <b>Turbo</b> (przycisk lub spacja): kopniak mocy, ale pali 3× więcej paliwa.<br><br>
+        📦 Jedź płynnie — na wybojach i twardych lądowaniach towar wyskakuje z paki.<br><br>
+        🏁 Im szybciej i z większą liczbą skrzynek dojedziesz, tym więcej punktów. Quiz po etapie: +300.
+        <button class="btn" id="bInfoClose" style="margin-top:14px">Rozumiem</button>
+      </div>
+    </div>
   </div>
 
   <!-- QUIZ -->
@@ -107,6 +141,11 @@
     <div class="vhead"><div class="badge">🏆</div><h1>Wszystkie kursy<br>zaliczone!</h1><div class="sub">mistrz górskich dostaw</div></div>
     <div class="big" id="fScore"></div>
     <div class="card fact">Amarok znaczy „wilk" w mitologii Inuitów — i po tych 4 etapach wiesz już dlaczego: w górach czuje się jak u siebie. 🐺</div>
+        <div class="card">
+      <input id="nameInp" maxlength="12" placeholder="Wpisz swoje imię">
+      <button class="btn" id="bSave" style="margin-top:8px">💾 Zapisz wynik</button>
+      <div id="rankList"></div>
+    </div>
     <button class="btn" id="bAgain">Zagraj od nowa</button>
   </div>
 
@@ -115,6 +154,51 @@
 
 <script>
 "use strict";
+/* ===== DŹWIĘKI (Web Audio, w pełni syntetyczne) ===== */
+const SFX=(()=>{
+ let ac=null,master=null,engOsc=null,engGain=null,engFl=null;
+ function init(){if(ac)return;
+  try{ac=new (window.AudioContext||window.webkitAudioContext)();
+  master=ac.createGain();master.gain.value=0.33;master.connect(ac.destination);}catch(e){}}
+ document.addEventListener("pointerdown",()=>{init();if(ac&&ac.state==="suspended")ac.resume();},{capture:true});
+ function tone(f,dur,type,vol,slide){if(!ac)return;
+  const o=ac.createOscillator(),g=ac.createGain();
+  o.type=type||"sine";o.frequency.setValueAtTime(f,ac.currentTime);
+  if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(30,f+slide),ac.currentTime+dur);
+  g.gain.setValueAtTime(vol||0.3,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+dur);
+  o.connect(g);g.connect(master);o.start();o.stop(ac.currentTime+dur+0.02);}
+ function noise(dur,vol,f){if(!ac)return;
+  const n=ac.createBufferSource(),b=ac.createBuffer(1,Math.ceil(ac.sampleRate*dur),ac.sampleRate);
+  const d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  n.buffer=b;const g=ac.createGain(),fl=ac.createBiquadFilter();
+  fl.type="lowpass";fl.frequency.value=f||800;
+  g.gain.setValueAtTime(vol||0.5,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+dur);
+  n.connect(fl);fl.connect(g);g.connect(master);n.start();}
+ return{
+  blip(){tone(640,0.05,"square",0.18);},
+  click(){tone(440,0.06,"square",0.22);},
+  rotate(){tone(520,0.07,"triangle",0.28,150);},
+  thud(){noise(0.13,0.55,320);tone(85,0.13,"sine",0.5,-30);},
+  crack(){noise(0.09,0.6,2600);tone(1300,0.08,"square",0.18,-700);},
+  clear(){[523,659,784].forEach((f,i)=>setTimeout(()=>tone(f,0.16,"triangle",0.35),i*75));},
+  win(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,0.22,"triangle",0.4),i*115));},
+  fail(){tone(220,0.32,"sawtooth",0.3,-120);setTimeout(()=>tone(155,0.42,"sawtooth",0.26,-70),170);},
+  coin(){tone(880,0.08,"square",0.26);setTimeout(()=>tone(1175,0.12,"square",0.26),75);},
+  ding(){tone(988,0.13,"triangle",0.3);},
+  angry(){tone(185,0.26,"sawtooth",0.34,-70);},
+  turbo(){tone(190,0.55,"sawtooth",0.3,650);},
+  crash(){noise(0.55,0.7,520);tone(65,0.5,"sine",0.55,-35);},
+  engine(on,rate){if(!ac)return;
+   if(on&&!engOsc){engOsc=ac.createOscillator();engGain=ac.createGain();engFl=ac.createBiquadFilter();
+    engOsc.type="sawtooth";engGain.gain.value=0.045;engFl.type="lowpass";engFl.frequency.value=300;
+    engOsc.connect(engFl);engFl.connect(engGain);engGain.connect(master);engOsc.start();}
+   if(!on&&engOsc){try{engOsc.stop();}catch(e){}engOsc=null;return;}
+   if(engOsc)engOsc.frequency.value=42+Math.max(0,Math.min(1.6,rate))*95;}
+ };
+})();
+
 /* ================= ETAPY ================= */
 const LEVELS=[
  {name:"Pogórze",sub:"etap 1 · rozgrzewka",len:1800,mult:0.7,canGap:170,canH:[1.2,3.5],
@@ -134,6 +218,12 @@ const LEVELS=[
   fact:"Finał w Andach nieprzypadkowo — to góry Argentyny, gdzie narodziła się pierwsza generacja. Obecny Amarok (od 2022) powstaje we współpracy z Fordem w <b>RPA</b>: ładowność ok. <b>1,19 t</b>, uciąg <b>3,5 t</b>, brodzenie <b>800 mm</b>.",
   quiz:{q:"Gdzie produkowana jest obecna generacja Amaroka?",a:["W Argentynie","W Niemczech","W RPA"],ok:2}}
 ];
+/* ZDJĘCIE AUTA: wgraj do repo plik "amarok.png" (widok z boku, przodem W PRAWO,
+   najlepiej PNG z przezroczystym tłem). Gra użyje go automatycznie;
+   bez pliku zostaje rysunek wektorowy. */
+const CAR_IMG=new Image();let CAR_OK=false;
+CAR_IMG.onload=()=>{CAR_OK=true;};CAR_IMG.onerror=()=>{CAR_OK=false;};
+CAR_IMG.src="amarok.png";
 const BOXES0=6, FUEL0=76, FUEL_CAN=30;
 const G=9.81, AIRG=6.6, PXM=9, W=430, H=696, GRAB=12;
 
@@ -200,7 +290,7 @@ function resetLevel(){
 
 /* ================= EKRANY ================= */
 const $=id=>document.getElementById(id);
-function show(id){["sStory","sQuiz","sResult","sFinal"].forEach(s=>$(s).classList.toggle("on",s===id));
+function show(id){var bm=document.getElementById("backMenu");if(bm)bm.style.display=(id===null)?"none":"flex";["sStory","sQuiz","sResult","sFinal"].forEach(s=>$(s).classList.toggle("on",s===id));
  const drive=(id===null);$("hud").style.display=drive?"block":"none";$("ctrl").style.display=drive?"flex":"none";}
 function story(){
  const L=LV();
@@ -210,16 +300,33 @@ function story(){
   <span class="chip">Hopy: <b>${L.nRamp}</b></span><span class="chip">Górki: <b>${L.nMega}</b></span>
   <span class="chip">Urwiska: <b>${L.nDrop}</b></span><span class="chip">Tarka: <b>${L.nWash}</b></span>`;
  show("sStory");S.st="story";
+ drawIntroVan();
 }
+function drawIntroVan(){var el=document.getElementById("introVan");if(!el)return;
+ el.innerHTML='<ellipse cx="150" cy="116" rx="120" ry="6" fill="#00000022"/>'
+ +'<path d="M0 96 L0 74 Q60 44 130 62 Q210 82 300 54 L300 96 Z" fill="#E7DFC9"/>'
+ +'<rect x="52" y="54" width="66" height="26" rx="4" fill="#2E3338"/>'
+ +'<rect x="58" y="40" width="18" height="14" rx="2" fill="#B8905A" stroke="#7A5A34"/>'
+ +'<rect x="80" y="40" width="18" height="14" rx="2" fill="#B8905A" stroke="#7A5A34"/>'
+ +'<path d="M118 80 L118 48 Q118 40 128 38 L156 36 L178 50 L204 54 Q212 58 212 66 L212 80 Z" fill="#20262C"/>'
+ +'<path d="M130 42 L154 40 L170 50 L130 50 Z" fill="#8FB4CC"/>'
+ +'<rect x="52" y="74" width="160" height="6" fill="#D4622A"/>'
+ +'<path d="M250 50 L266 54 L266 66 L250 62 Z" fill="#F4ECD8"/>'
+ +'<circle cx="90" cy="84" r="14" fill="#0D0D10"/><circle cx="90" cy="84" r="7" fill="#3A3A40"/>'
+ +'<circle cx="186" cy="84" r="14" fill="#0D0D10"/><circle cx="186" cy="84" r="7" fill="#3A3A40"/>';}
+(function(){var b=document.getElementById("bInfo"),c=document.getElementById("bInfoClose"),o=document.getElementById("infoOv");
+ if(b)b.onclick=function(){o.classList.add("on");};
+ if(c)c.onclick=function(){o.classList.remove("on");};
+ if(o)o.addEventListener("click",function(e){if(e.target===o)o.classList.remove("on");});})();
 $("bGo").onclick=()=>{resetLevel();show(null);S.st="drive";};
 $("bAgain").onclick=()=>{S.lvl=0;S.score=0;story();};
 $("bNext").onclick=()=>{
  if(!S.win){story();return;}
  if(S.lvl<LEVELS.length-1){S.lvl++;story();}
- else{$("fScore").textContent=Math.round(S.score)+" pkt";show("sFinal");S.st="final";}
+ else{$("fScore").textContent=Math.round(S.score)+" pkt";show("sFinal");rankShow();S.st="final";}
 };
 document.querySelectorAll(".qopt").forEach(b=>b.onclick=()=>{
- const ok=+b.dataset.q===LV().quiz.ok;if(ok)S.score+=300;
+ const ok=+b.dataset.q===LV().quiz.ok;if(ok){S.score+=300;SFX.clear();}else SFX.angry();
  showResult(true,ok);});
 
 /* ================= STEROWANIE ================= */
@@ -228,17 +335,17 @@ const hold=(el,k)=>{el.addEventListener("pointerdown",e=>{e.preventDefault();S[k
  el.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});};
 hold($("gas"),"gas");hold($("brake"),"brake");
 $("turbo").addEventListener("pointerdown",e=>{e.preventDefault();
- if(S.tCharge>0&&S.tTime<=0&&S.st==="drive"){S.tCharge--;S.tTime=2.6;tBtn();
+ if(S.tCharge>0&&S.tTime<=0&&S.st==="drive"){S.tCharge--;S.tTime=2.6;tBtn();SFX.turbo();
   toast("🌀 TURBO! Trzymaj się — pali 3× więcej!");}});
 function tBtn(){const b=$("turbo");$("tCnt").textContent="×"+S.tCharge;
  b.disabled=!(S.tCharge>0&&S.tTime<=0);}
 addEventListener("keydown",e=>{if(e.key==="ArrowUp"||e.key==="ArrowRight")S.gas=true;
  if(e.key==="ArrowDown"||e.key==="ArrowLeft")S.brake=true;
- if(e.key===" "&&S.tCharge>0&&S.tTime<=0&&S.st==="drive"){S.tCharge--;S.tTime=2.6;tBtn();}});
+ if(e.key===" "&&S.tCharge>0&&S.tTime<=0&&S.st==="drive"){S.tCharge--;S.tTime=2.6;tBtn();SFX.turbo();}});
 addEventListener("keyup",e=>{if(e.key==="ArrowUp"||e.key==="ArrowRight")S.gas=false;
  if(e.key==="ArrowDown"||e.key==="ArrowLeft")S.brake=false;});
 document.addEventListener("contextmenu",e=>e.preventDefault());
-document.addEventListener("selectstart",e=>e.preventDefault());
+document.addEventListener("selectstart",e=>{if(!e.target||e.target.tagName!=="INPUT")e.preventDefault();});
 document.addEventListener("gesturestart",e=>e.preventDefault());
 let lastTouch=0;document.addEventListener("touchend",e=>{const n=Date.now();
  if(n-lastTouch<350)e.preventDefault();lastTouch=n;},{passive:false});
@@ -267,7 +374,7 @@ cv.addEventListener("pointerdown",e=>{
   const dist=Math.hypot(best.x-S.x,best.e-S.e);
   if(dist<=GRAB){best.hit=true;S.rope=0.5;S.ropeC={x:best.x,e:best.e};
    if(isT){S.tCharge=Math.min(2,S.tCharge+1);tBtn();S.score+=40;toast("🌀 Turbo w kieszeni! Aktywuj przyciskiem.");}
-   else{S.got++;S.fuel=Math.min(100,S.fuel+FUEL_CAN);S.score+=50;toast("🫴 Kanister złapany w locie! +paliwo, +50 pkt");}}
+   else{S.got++;S.fuel=Math.min(100,S.fuel+FUEL_CAN);S.score+=50;SFX.coin();toast("🫴 Kanister złapany w locie! +paliwo, +50 pkt");}}
   else toast("✋ Za daleko! Podjedź bliżej ("+Math.round(dist)+" m)");
  }
 });
@@ -287,7 +394,7 @@ function updateCrates(dt){
   if(c.by<0){c.by=0;c.bvy*=-0.25;}
   if(c.by>26){S.crates.splice(i,1);
    S.parts.push({x:S.x,e:S.e+2.5,vx:S.v*0.5-3+Math.random()*6,vy:6+Math.random()*3,t:0,spin:5});
-   toast("📦 Skrzynka wyleciała za burtę! Jedź płynniej.");}
+   SFX.thud();toast("📦 Skrzynka wyleciała za burtę! Jedź płynniej.");}
  }
  /* w locie do góry nogami towar się wysypuje */
  if(S.air&&Math.abs(wrap(S.pitch))>1.5){
@@ -344,7 +451,7 @@ function updatePhys(dt){
  S.fuel-=(0.85+(S.gas?1.5:0)+(turboOn?2.7:0))*dt*0.62;
  for(const c of S.cans){if(c.hit)continue;
   if(Math.abs(c.x-S.x)<2.2&&Math.abs(c.e-S.e)<2.6){c.hit=true;S.got++;
-   S.fuel=Math.min(100,S.fuel+FUEL_CAN);S.score+=50;toast("⛽ Kanister! +paliwo, +50 pkt");}}
+   S.fuel=Math.min(100,S.fuel+FUEL_CAN);S.score+=50;SFX.coin();toast("⛽ Kanister! +paliwo, +50 pkt");}}
  for(const c of S.turbos){if(c.hit)continue;
   if(Math.abs(c.x-S.x)<2.4&&Math.abs(c.e-S.e)<2.8){c.hit=true;
    S.tCharge=Math.min(2,S.tCharge+1);tBtn();S.score+=40;toast("🌀 Turbo zebrane! Aktywuj przyciskiem.");}}
@@ -363,20 +470,21 @@ function landing(){
  if(Math.abs(diff)>1.35||diff<-0.72||impact>17){startCrash(diff);return;}
  S.air=false;S.vy=0;
  const flip=S.rotAcc>5.6;
- if(flip){S.score+=350;toast("🔄 BACKFLIP na koła! +350 pkt");}
+ if(flip){S.score+=350;SFX.clear();toast("🔄 BACKFLIP na koła! +350 pkt");}
  else if(S.airT>0.45){S.score+=Math.round(S.airT*80);
   toast("🛬 Lot "+S.airT.toFixed(1)+"s"+(Math.abs(diff)<0.22?" — czyste lądowanie!":"")+" +"+Math.round(S.airT*80)+" pkt");}
  if(diff>0.9){ /* na zderzak tylny */
   S.shake=0.8;S.v*=0.4;crateEject(6);crateEject(6);
   toast("💥 Lądowanie na tyle! Wypadły 2 skrzynki.");
  }else if(Math.abs(diff)>0.35||impact>10.5){ /* krzywo lub twardo */
-  S.shake=0.6;S.v*=0.7;crateImpulse(90);
+  S.shake=0.6;S.v*=0.7;crateImpulse(90);SFX.thud();
   if(impact>8)crateEject(5);
   toast("💥 Twarde lądowanie — przód przyjął cios! Ustawiaj auto gazem/hamulcem w locie.");
  }else if(impact>6){crateImpulse(60);S.shake=0.3;}
  S.pitch=wrap(S.pitch);S.airT=0;S.rotAcc=0;
 }
 function startCrash(diff){
+ SFX.crash();
  S.st="crash";S.crashT=1.7;S.shake=1;
  S.om=(diff<0?-1:1)*(3+Math.random());
  while(S.crates.length)crateEject(6);
@@ -403,10 +511,10 @@ function updateParts(dt){
 
 function finish(win,why){
  if(S.st!=="drive")return;S.win=win;S.failWhy=why||"";
- if(win){S.st="quiz";const q=LV().quiz;$("qQ").innerHTML=q.q;
+ if(win){SFX.win();S.st="quiz";const q=LV().quiz;$("qQ").innerHTML=q.q;
   document.querySelectorAll(".qopt").forEach((b,i)=>{b.textContent=["A","B","C"][i]+". "+q.a[i];});
   show("sQuiz");}
- else{S.st="result";showResult(false,false);}
+ else{SFX.fail();S.st="result";showResult(false,false);}
 }
 function showResult(win,quizOk){
  S.st="result";
@@ -548,22 +656,34 @@ function drawAmarok(px,py,rot){
  if(S.shake>0){ctx.translate((Math.random()-0.5)*7*S.shake,(Math.random()-0.5)*7*S.shake);S.shake=Math.max(0,S.shake-0.04);}
  ctx.rotate(rot);
  if(S.tTime>0){ctx.fillStyle="#B79AF0";
-  for(let i=0;i<3;i++)ctx.fillRect(-40-Math.random()*12,-4+i*4,8+Math.random()*8,3);}
- if(!S.air&&S.st!=="crash"){ctx.fillStyle="#00000038";ctx.beginPath();ctx.ellipse(0,14,34,6,0,0,7);ctx.fill();}
- ctx.fillStyle="#2E3338";ctx.fillRect(-34,-8,30,14);
- for(let i=0;i<S.crates.length;i++){const c=S.crates[i];
-  const bx=-32+(i%3)*10, by=-14-Math.floor(i/3)*9-c.by;
-  ctx.fillStyle="#B8905A";ctx.fillRect(bx,by,9,8);
-  ctx.strokeStyle="#7A5A34";ctx.lineWidth=1;ctx.strokeRect(bx,by,9,8);}
- ctx.fillStyle="#20262C";
- ctx.beginPath();ctx.moveTo(-6,-8);ctx.lineTo(-4,-20);ctx.lineTo(12,-20);ctx.lineTo(20,-9);
- ctx.lineTo(34,-7);ctx.lineTo(34,6);ctx.lineTo(-6,6);ctx.closePath();ctx.fill();
- ctx.fillStyle="#8FB4CC";ctx.beginPath();ctx.moveTo(-2,-18);ctx.lineTo(10,-18);ctx.lineTo(16,-10);ctx.lineTo(-2,-10);ctx.closePath();ctx.fill();
- ctx.fillStyle="#D4622A";ctx.fillRect(-34,4,68,3);
- ctx.fillStyle="#F4ECD8";ctx.fillRect(31,-5,3,4);
- for(const wx of [-24,22]){ctx.fillStyle="#0D0D10";ctx.beginPath();ctx.arc(wx,10,10,0,7);ctx.fill();
-  ctx.fillStyle="#3A3A40";ctx.beginPath();ctx.arc(wx,10,5.5,0,7);ctx.fill();
-  ctx.fillStyle="#8C949C";ctx.beginPath();ctx.arc(wx,10,2,0,7);ctx.fill();}
+  for(let i=0;i<3;i++)ctx.fillRect(-46-Math.random()*12,-2+i*4,8+Math.random()*8,3);}
+ if(!S.air&&S.st!=="crash"){ctx.fillStyle="#00000038";ctx.beginPath();ctx.ellipse(0,14,36,6,0,0,7);ctx.fill();}
+ if(CAR_OK){
+  /* ZDJĘCIE: szerokość 96 px, koła osadzone na linii y=16.
+     Reguluj w razie potrzeby: IMG_W (rozmiar), IMG_DY (góra/dół), BED_X (pozycja skrzynek) */
+  const IMG_W=96, IMG_DY=0, BED_X=-34;
+  const h=IMG_W*CAR_IMG.height/CAR_IMG.width;
+  ctx.drawImage(CAR_IMG,-IMG_W/2,16-h+IMG_DY,IMG_W,h);
+  for(let i=0;i<S.crates.length;i++){const c=S.crates[i];
+   const bx=BED_X+(i%3)*10, by=-16-Math.floor(i/3)*9-c.by;
+   ctx.fillStyle="#B8905A";ctx.fillRect(bx,by,9,8);
+   ctx.strokeStyle="#7A5A34";ctx.lineWidth=1;ctx.strokeRect(bx,by,9,8);}
+ }else{
+  ctx.fillStyle="#2E3338";ctx.fillRect(-34,-8,30,14);
+  for(let i=0;i<S.crates.length;i++){const c=S.crates[i];
+   const bx=-32+(i%3)*10, by=-14-Math.floor(i/3)*9-c.by;
+   ctx.fillStyle="#B8905A";ctx.fillRect(bx,by,9,8);
+   ctx.strokeStyle="#7A5A34";ctx.lineWidth=1;ctx.strokeRect(bx,by,9,8);}
+  ctx.fillStyle="#20262C";
+  ctx.beginPath();ctx.moveTo(-6,-8);ctx.lineTo(-4,-20);ctx.lineTo(12,-20);ctx.lineTo(20,-9);
+  ctx.lineTo(34,-7);ctx.lineTo(34,6);ctx.lineTo(-6,6);ctx.closePath();ctx.fill();
+  ctx.fillStyle="#8FB4CC";ctx.beginPath();ctx.moveTo(-2,-18);ctx.lineTo(10,-18);ctx.lineTo(16,-10);ctx.lineTo(-2,-10);ctx.closePath();ctx.fill();
+  ctx.fillStyle="#D4622A";ctx.fillRect(-34,4,68,3);
+  ctx.fillStyle="#F4ECD8";ctx.fillRect(31,-5,3,4);
+  for(const wx of [-24,22]){ctx.fillStyle="#0D0D10";ctx.beginPath();ctx.arc(wx,10,10,0,7);ctx.fill();
+   ctx.fillStyle="#3A3A40";ctx.beginPath();ctx.arc(wx,10,5.5,0,7);ctx.fill();
+   ctx.fillStyle="#8C949C";ctx.beginPath();ctx.arc(wx,10,2,0,7);ctx.fill();}
+ }
  ctx.restore();
 }
 
@@ -583,13 +703,34 @@ function drawHUD(){
 let last=performance.now();
 function loop(t){
  const dt=Math.min(0.04,(t-last)/1000);last=t;
- if(S.st==="drive"){updatePhys(dt);drawScene();drawHUD();}
- else if(S.st==="crash"){updateCrash(dt);drawScene();drawHUD();}
+ if(S.st==="drive"){updatePhys(dt);drawScene();drawHUD();SFX.engine(true,S.v/30+(S.gas?0.15:0)+(S.tTime>0?0.4:0));}
+ else if(S.st==="crash"){updateCrash(dt);drawScene();drawHUD();SFX.engine(false);}
+ else SFX.engine(false);
  if(S.toastT>0){S.toastT-=dt;if(S.toastT<=0)$("toast").style.display="none";}
  requestAnimationFrame(loop);
 }
 S.lvl=0;S.score=0;story();
 requestAnimationFrame(loop);
+
+/* ===== RANKING (localStorage) ===== */
+const GAME_KEY="amarok";
+function rankLoad(){try{return JSON.parse(localStorage.getItem("vwrank_"+GAME_KEY))||[]}catch(e){return[]}}
+function rankRender(){const el=document.getElementById("rankList");if(!el)return;
+ const r=rankLoad();
+ el.innerHTML=r.length?"<b style='letter-spacing:.08em'>🏆 NAJLEPSI KIEROWCY</b><br>"+
+  r.map((e,i)=>(i+1)+". "+e.n+" — <b>"+e.s+" pkt</b>").join("<br>"):"";}
+function rankShow(){const i=document.getElementById("nameInp"),b=document.getElementById("bSave");
+ if(!i)return;i.style.display="block";b.style.display="block";
+ try{i.value=localStorage.getItem("vwrank_name")||"";}catch(e){}
+ rankRender();}
+(function(){const b=document.getElementById("bSave");if(!b)return;
+ b.addEventListener("click",()=>{const i=document.getElementById("nameInp");
+  const n=(i.value||"").trim().slice(0,12)||"Kierowca";
+  try{localStorage.setItem("vwrank_name",n);}catch(e){}
+  const r=rankLoad();r.push({n:n,s:Math.round(S.score)});
+  r.sort((a,b2)=>b2.s-a.s);
+  try{localStorage.setItem("vwrank_"+GAME_KEY,JSON.stringify(r.slice(0,5)));}catch(e){}
+  i.style.display="none";b.style.display="none";rankRender();});})();
 </script>
 </body>
 </html>
