@@ -284,25 +284,25 @@ const SFX=(()=>{
 
 /* ====== DANE HISTORYCZNE (autentyczne) ====== */
 const GENS=[
- {id:"T1",name:"Transporter T1 „Bulli”",years:"1950–1967",payload:750,body:"#56789B",body2:"#F4ECD8",nose:"v",
+ {id:"T1",img:"transporter2.png",name:"Transporter T1 „Bulli”",years:"1950–1967",payload:750,body:"#56789B",body2:"#F4ECD8",nose:"v",
   fact:"Wszystko zaczęło się od odręcznego szkicu holenderskiego importera <b>Bena Pona z 1947 r.</b> Produkcja ruszyła <b>8 marca 1950 r.</b> Silnik z tyłu, napęd na tylne koła i słynna <b>dzielona przednia szyba</b> — technika rodem z Garbusa.",
   quiz:{q:"W którym roku ruszyła seryjna produkcja Transportera T1?",a:["1947","1950","1956"],ok:1}},
- {id:"T2",name:"Transporter T2",years:"1967–1979",payload:900,body:"#C0512D",body2:"#F4ECD8",nose:"flat",
+ {id:"T2",img:"transporter3.png",name:"Transporter T2",years:"1967–1979",payload:900,body:"#C0512D",body2:"#F4ECD8",nose:"flat",
   fact:"W 1967 r. T2 dostał <b>jednolitą przednią szybę</b> i większe nadwozie. Ciekawostka: w <b>Brazylii</b> produkowano go aż do <b>2013 roku</b>! Łącznie powstało ok. 3,5 mln sztuk.",
   quiz:{q:"Do którego roku produkowano T2 w Brazylii?",a:["1979","1996","2013"],ok:2}},
- {id:"T3",name:"Transporter T3",years:"1979–1992",payload:1000,body:"#8A6E4B",body2:"#E8DFC8",nose:"box",
+ {id:"T3",img:"transporter4.png",name:"Transporter T3",years:"1979–1992",payload:1000,body:"#8A6E4B",body2:"#E8DFC8",nose:"box",
   fact:"T3 był <b>ostatnim Transporterem z silnikiem umieszczonym z tyłu</b>. W 1981 r. padł rekord <b>5 milionów</b> wyprodukowanych aut, a w 1985 r. w Hanowerze zadebiutował <b>Multivan</b>.",
   quiz:{q:"Który Transporter był ostatnim z silnikiem z tyłu?",a:["T2","T3","T4"],ok:1}},
- {id:"T4",name:"Transporter T4",years:"1990–2003",payload:1100,body:"#8C2F2F",body2:"#D8D8DC",nose:"short",
+ {id:"T4",img:"transporter5.png",name:"Transporter T4",years:"1990–2003",payload:1100,body:"#8C2F2F",body2:"#D8D8DC",nose:"short",
   fact:"<b>9 stycznia 1990 r.</b> — rewolucja: silnik przeniesiono <b>do przodu</b>, pojawił się napęd przednich kół i wersje Syncro 4×4. Od grudnia <b>1993 r. montaż ruszył w Poznaniu</b>.",
   quiz:{q:"Co zmieniło się w T4 w 1990 roku?",a:["Silnik trafił do przodu","Dostał dzieloną szybę","Był tylko elektryczny"],ok:0}},
- {id:"T5",name:"Transporter T5",years:"2003–2015",payload:1200,body:"#9FA6AD",body2:"#5B6770",nose:"short",
+ {id:"T5",img:"transporter6.png",name:"Transporter T5",years:"2003–2015",payload:1200,body:"#9FA6AD",body2:"#5B6770",nose:"short",
   fact:"T5 produkowano m.in. w <b>Poznaniu</b>. Po liftingu w 2009 r. jako <b>pierwszy samochód dostawczy na świecie</b> dostał dwusprzęgłową skrzynię <b>DSG</b>. Ładowność sięgała ok. 1,2 tony.",
   quiz:{q:"Gdzie produkowano Transportera T5?",a:["Tylko w Hanowerze","M.in. w Poznaniu","W Brazylii"],ok:1}},
- {id:"T6 / T6.1",name:"Transporter T6 i T6.1",years:"2015–2024",payload:1300,body:"#2E5E8C",body2:"#E8E8EC",nose:"short",
+ {id:"T6 / T6.1",img:"transporter7.png",name:"Transporter T6 i T6.1",years:"2015–2024",payload:1300,body:"#2E5E8C",body2:"#E8E8EC",nose:"short",
   fact:"T6 (2015) i T6.1 (2019) przyniosły <b>Digital Cockpit</b>, elektromechaniczne wspomaganie i normę Euro 6. Przestrzeń ładunkowa: od <b>4,3 do aż 9,3 m³</b> (L2, wysoki dach).",
   quiz:{q:"Ile wynosi maksymalna pojemność ładunkowa T6.1?",a:["6,2 m³","9,3 m³","12 m³"],ok:1}},
- {id:"T7",name:"Nowy Transporter",years:"od 2024",payload:1410,body:"#E8E8EC",body2:"#26262B",nose:"modern",
+ {id:"T7",img:"transporter8.png",name:"Nowy Transporter",years:"od 2024",payload:1410,body:"#E8E8EC",body2:"#26262B",nose:"modern",
   fact:"Najnowszy Transporter powstaje we współpracy z Fordem. <b>Ładowność do 1410 kg</b> przy DMC 3225 kg czyni go jednym z najpojemniejszych w klasie. Seria T ma na koncie ponad <b>12 mln</b> sprzedanych aut w 75 lat!",
   quiz:{q:"Jaka jest maksymalna ładowność nowego Transportera?",a:["990 kg","1410 kg","2200 kg"],ok:1}}
 ];
@@ -331,7 +331,13 @@ function show(id){var bm=document.getElementById("backMenu");if(bm)bm.style.disp
    a gra użyje zdjęcia zamiast rysunku. */
 function vanSide(svg,g){
  svg.setAttribute("viewBox","0 0 300 120");
- if(g.img){svg.innerHTML=`<image href="${g.img}" x="0" y="0" width="300" height="120" preserveAspectRatio="xMidYMid meet"/>`;return;}
+ if(g.img){var im=new Image();
+   im.onload=function(){svg.innerHTML='<image href="'+g.img+'" x="0" y="0" width="300" height="120" preserveAspectRatio="xMidYMid meet"/>';};
+   im.onerror=function(){vanSideVector(svg,g);};
+   im.src=g.img;return;}
+ vanSideVector(svg,g);}
+function vanSideVector(svg,g){
+ svg.setAttribute("viewBox","0 0 300 120");
  const uid="g"+g.id.replace(/[^A-Za-z0-9]/g,"");
  const grad=(id,c1,c2)=>`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient>`;
  const wheels=(hub)=>`
