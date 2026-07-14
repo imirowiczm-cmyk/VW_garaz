@@ -52,13 +52,13 @@
   .qopt{text-align:left;font-size:16px}
   #hud{position:absolute;left:0;right:0;top:0;padding:8px 10px;z-index:5;display:none;background:linear-gradient(#17171BEE,#17171B00)}
   #hud .row{display:flex;gap:8px;align-items:center;font-size:11px;color:var(--concrete)}
-  #hud .hbar{flex:1;height:8px;background:#111;border-radius:4px;overflow:hidden}
+  #hud .hbar{flex:1;height:8px;background:#0C1B2E;border:1px solid #34506F;border-radius:4px;overflow:hidden}
   #hud .hbar>i{display:block;height:100%}
   #hud .top{display:flex;justify-content:space-between;font-family:'Saira Condensed';font-weight:700;font-size:15px;color:var(--cream);margin-bottom:4px}
   #ctrl{position:absolute;left:0;right:0;bottom:0;z-index:5;display:none;gap:10px;padding:10px;justify-content:space-between}
   .pedal{flex:1;height:64px;touch-action:none;border-radius:12px;border:0;font-family:'Saira Condensed';font-weight:900;font-size:18px;text-transform:uppercase;color:#fff;opacity:.92}
   #brake{background:var(--bad)} #gas{background:var(--ok)}
-  #toast{position:absolute;left:12px;right:12px;top:96px;z-index:8;background:#17171BE8;border-left:4px solid var(--amber);
+  #toast{position:absolute;left:12px;right:12px;top:96px;z-index:8;background:#193251EE;border:2px solid #E3A72F;border-left:6px solid var(--amber);box-shadow:0 6px 0 rgba(12,29,44,.4);
     border-radius:8px;padding:10px 12px;font-size:13.5px;display:none;line-height:1.35}
   .stars{font-size:34px;text-align:center;letter-spacing:6px;margin:6px 0}
   .big{font-family:'Saira Condensed';font-weight:900;font-size:44px;text-align:center;color:var(--amber)}
@@ -68,10 +68,54 @@
   #wm span{position:absolute;font-family:'Saira Condensed';font-weight:900;font-size:46px;letter-spacing:.2em;color:#fff;transform:rotate(-24deg);white-space:nowrap}
   #wmfoot{position:absolute;left:0;right:0;bottom:2px;z-index:51;pointer-events:none;text-align:center;font-size:9.5px;color:#8A8A92;letter-spacing:.06em}
   @media (prefers-reduced-motion: reduce){ .bar>i{transition:none} }
+
+  #backMenu{position:absolute;top:10px;left:10px;z-index:60;display:flex;align-items:center;
+    background:#00000066;color:var(--cream);text-decoration:none;font-family:'Saira Condensed';font-weight:700;
+    font-size:13px;padding:6px 12px;border-radius:16px;letter-spacing:.05em;border:1px solid #FFFFFF22}
+  #nameInp{display:block;width:100%;border:0;border-radius:10px;padding:12px;font-size:16px;font-family:'Saira',sans-serif;
+    background:#0C1B2C;color:var(--cream);margin-top:4px;-webkit-user-select:text!important;user-select:text!important}
+  #rankList{margin-top:10px;font-size:14px;line-height:1.65}
+
+  /* ===== NOWY STYL INDEX ===== */
+  .screen{background:#f4f0e6 !important;
+    background-image:linear-gradient(rgba(25,50,81,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(25,50,81,0.05) 1px,transparent 1px) !important;
+    background-size:24px 24px !important;color:#193251 !important}
+  .vhead{background:#193251 !important;border-radius:20px !important;box-shadow:0 8px 0 rgba(25,50,81,.15) !important;
+    margin:0 0 8px !important;padding:18px 16px 20px !important}
+  .vhead::after{display:none !important}
+  .vhead h1{color:#fff !important}
+  .card,.panel{background:#fff !important;border:2px solid #193251 !important;border-radius:18px !important;
+    box-shadow:0 8px 0 rgba(25,50,81,.12) !important}
+  .fact{color:#193251 !important}
+  .fact b{color:#D4622A !important}
+  .btn{border-radius:14px !important;background:linear-gradient(135deg,#ff6b00,#ff8e3c) !important;color:#fff !important;
+    box-shadow:0 5px 0 #A8431F !important;border:0 !important}
+  .btn:active{transform:translateY(3px) !important;box-shadow:0 2px 0 #A8431F !important}
+  .btn.blue,.btn.ghost{background:#fff !important;color:#193251 !important;box-shadow:0 5px 0 rgba(25,50,81,.15) !important}
+  .btn.blue:active,.btn.ghost:active{box-shadow:0 2px 0 rgba(25,50,81,.15) !important}
+  .chip{background:#EDE4D2 !important;color:#53677f !important}
+  .chip b{color:#193251 !important}
+  .loadrow .nm small{color:#53677f !important}
+  .barlbl{color:#53677f !important}
+  .infoBtn{position:absolute;top:12px;right:12px;z-index:30;width:38px;height:38px;border-radius:50%;
+    border:2px solid #193251;background:#fff;color:#193251;font-family:'Saira Condensed',sans-serif;
+    font-weight:900;font-size:20px;box-shadow:0 4px 0 rgba(25,50,81,.15);cursor:pointer}
+  .infoBtn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(25,50,81,.15)}
+  .infoOv{position:absolute;inset:0;z-index:40;display:none;flex-direction:column;justify-content:center;
+    padding:22px;background:rgba(12,27,46,.72)}
+  .infoOv.on{display:flex}
+  .infoOv .box{background:#fff;border:2px solid #193251;border-radius:20px;padding:18px;
+    box-shadow:0 10px 0 rgba(25,50,81,.2);color:#193251;font-size:14px;line-height:1.5}
+  .infoOv .box b{color:#D4622A}
+  .infoOv h2{font-family:'Saira Condensed',sans-serif;font-size:22px;color:#193251;margin-bottom:8px}
+
+  #introPhoto{display:none;width:78%;max-width:280px;height:120px;object-fit:contain;margin:8px auto 2px;
+    filter:drop-shadow(0 12px 8px rgba(0,0,0,.35))}
 </style>
 </head>
 <body>
 <div id="wrap"><div id="app">
+  <a id="backMenu" href="index.html">‹ Garaż</a>
   <canvas id="cv" width="430" height="696"></canvas>
 
   <!-- HUD jazdy -->
@@ -95,10 +139,16 @@
       <h1>Transporter<br>75 lat na budowie</h1>
       <div class="sub">1950 – 2026 · autentyczna historia</div>
     </div>
+    <button class="infoBtn" id="bInfo">ⓘ</button>
     <svg class="vansvg" id="menuVan" width="300" height="120"></svg>
+    <img id="introPhoto" alt="Transporter">
     <div class="card fact">Poprowadź wszystkie generacje Volkswagena Transportera — od <b>T1 z 1950 r.</b> po <b>nowego Transportera</b>. Wóź cegły i beton, pilnuj <b>ładowności</b> i nie pozwól, by na budowie zabrakło materiału!</div>
-    <div class="card fact" style="font-size:13px">🎮 <b>Sterowanie:</b> stuknij lewą/prawą stronę drogi (lub strzałki ←→), aby zmienić pas. Trzymaj <b>Gaz</b>/<b>Hamulec</b> (lub ↑↓). Omijaj dziury — na wadze przeładowanie kończy się mandatem!</div>
     <button class="btn" id="bStart">Rozpocznij · rok 1950</button>
+    <div class="infoOv" id="infoOv"><div class="box"><h2>🎮 Jak grać</h2>
+      Stuknij <b>lewą/prawą stronę drogi</b> (lub strzałki ← →), aby zmienić pas. Trzymaj <b>Gaz / Hamulec</b> (lub ↑ ↓).<br><br>
+      Załaduj w składzie cegły i beton, ale pilnuj <b>ładowności</b> — omijaj dziury, bo gubisz materiał, a na wadze przeładowanie kończy się <b>mandatem</b>.<br><br>
+      Ekipa zużywa materiał bez przerwy — nie pozwól, by na budowie go zabrakło. Quiz po etapie: +300 pkt.
+      <button class="btn" id="bInfoClose" style="margin-top:14px">Rozumiem</button></div></div>
   </div>
 
   <!-- HISTORIA / intro poziomu -->
@@ -163,6 +213,11 @@
     <div class="vhead"><div class="badge">75</div><h1>Budowa ukończona!</h1><div class="sub">Przejechałeś przez 75 lat historii</div></div>
     <div class="big" id="fScore"></div>
     <div class="card fact">Od szkicu <b>Bena Pona z 1947 r.</b> po dzisiejszego Transportera budowanego z ładownością <b>1410 kg</b> — seria T to najlepiej sprzedający się van w historii, z wynikiem ponad <b>12 milionów</b> egzemplarzy. Spora część z nich powstała w <b>Poznaniu</b>. 🇵🇱</div>
+        <div class="card">
+      <input id="nameInp" maxlength="12" placeholder="Wpisz swoje imię">
+      <button class="btn" id="bSave" style="margin-top:8px">💾 Zapisz wynik</button>
+      <div id="rankList"></div>
+    </div>
     <button class="btn" id="bAgain">Zagraj jeszcze raz</button>
   </div>
   <div id="wmfoot">Wersja demonstracyjna · grafiki poglądowe</div>
@@ -170,6 +225,51 @@
 
 <script>
 "use strict";
+/* ===== DŹWIĘKI (Web Audio, w pełni syntetyczne) ===== */
+const SFX=(()=>{
+ let ac=null,master=null,engOsc=null,engGain=null,engFl=null;
+ function init(){if(ac)return;
+  try{ac=new (window.AudioContext||window.webkitAudioContext)();
+  master=ac.createGain();master.gain.value=0.33;master.connect(ac.destination);}catch(e){}}
+ document.addEventListener("pointerdown",()=>{init();if(ac&&ac.state==="suspended")ac.resume();},{capture:true});
+ function tone(f,dur,type,vol,slide){if(!ac)return;
+  const o=ac.createOscillator(),g=ac.createGain();
+  o.type=type||"sine";o.frequency.setValueAtTime(f,ac.currentTime);
+  if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(30,f+slide),ac.currentTime+dur);
+  g.gain.setValueAtTime(vol||0.3,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+dur);
+  o.connect(g);g.connect(master);o.start();o.stop(ac.currentTime+dur+0.02);}
+ function noise(dur,vol,f){if(!ac)return;
+  const n=ac.createBufferSource(),b=ac.createBuffer(1,Math.ceil(ac.sampleRate*dur),ac.sampleRate);
+  const d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  n.buffer=b;const g=ac.createGain(),fl=ac.createBiquadFilter();
+  fl.type="lowpass";fl.frequency.value=f||800;
+  g.gain.setValueAtTime(vol||0.5,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+dur);
+  n.connect(fl);fl.connect(g);g.connect(master);n.start();}
+ return{
+  blip(){tone(640,0.05,"square",0.18);},
+  click(){tone(440,0.06,"square",0.22);},
+  rotate(){tone(520,0.07,"triangle",0.28,150);},
+  thud(){noise(0.13,0.55,320);tone(85,0.13,"sine",0.5,-30);},
+  crack(){noise(0.09,0.6,2600);tone(1300,0.08,"square",0.18,-700);},
+  clear(){[523,659,784].forEach((f,i)=>setTimeout(()=>tone(f,0.16,"triangle",0.35),i*75));},
+  win(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,0.22,"triangle",0.4),i*115));},
+  fail(){tone(220,0.32,"sawtooth",0.3,-120);setTimeout(()=>tone(155,0.42,"sawtooth",0.26,-70),170);},
+  coin(){tone(880,0.08,"square",0.26);setTimeout(()=>tone(1175,0.12,"square",0.26),75);},
+  ding(){tone(988,0.13,"triangle",0.3);},
+  angry(){tone(185,0.26,"sawtooth",0.34,-70);},
+  turbo(){tone(190,0.55,"sawtooth",0.3,650);},
+  crash(){noise(0.55,0.7,520);tone(65,0.5,"sine",0.55,-35);},
+  engine(on,rate){if(!ac)return;
+   if(on&&!engOsc){engOsc=ac.createOscillator();engGain=ac.createGain();engFl=ac.createBiquadFilter();
+    engOsc.type="sawtooth";engGain.gain.value=0.045;engFl.type="lowpass";engFl.frequency.value=300;
+    engOsc.connect(engFl);engFl.connect(engGain);engGain.connect(master);engOsc.start();}
+   if(!on&&engOsc){try{engOsc.stop();}catch(e){}engOsc=null;return;}
+   if(engOsc)engOsc.frequency.value=42+Math.max(0,Math.min(1.6,rate))*95;}
+ };
+})();
+
 /* ====== DANE HISTORYCZNE (autentyczne) ====== */
 const GENS=[
  {id:"T1",name:"Transporter T1 „Bulli”",years:"1950–1967",payload:750,body:"#56789B",body2:"#F4ECD8",nose:"v",
@@ -210,7 +310,7 @@ function load(){return S.loadB*BRICK_KG+S.loadC*CONC_KG;}
 /* ====== EKRANY ====== */
 const $=id=>document.getElementById(id);
 const screens=["sMenu","sStory","sDepot","sQuiz","sResult","sFinal"];
-function show(id){screens.forEach(s=>$(s).classList.toggle("on",s===id));
+function show(id){var bm=document.getElementById("backMenu");if(bm)bm.style.display=(id===null)?"none":"flex";screens.forEach(s=>$(s).classList.toggle("on",s===id));
  const drive=(id===null);$("hud").style.display=drive?"block":"none";$("ctrl").style.display=drive?"flex":"none";}
 
 /* ====== SYLWETKA BOCZNA (SVG) ======
@@ -387,7 +487,7 @@ function laneTap(dx){if(S.state!=="drive")return;S.lane=Math.max(0,Math.min(2,S.
 cv.addEventListener("pointerdown",e=>{e.preventDefault();const r=cv.getBoundingClientRect();laneTap((e.clientX-r.left)/r.width<0.5?-1:1);});
 cv.addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
 document.addEventListener("contextmenu",e=>e.preventDefault());
-document.addEventListener("selectstart",e=>e.preventDefault());
+document.addEventListener("selectstart",e=>{if(!e.target||e.target.tagName!=="INPUT")e.preventDefault();});
 document.addEventListener("gesturestart",e=>e.preventDefault());
 let lastTouch=0;document.addEventListener("touchend",e=>{const n=Date.now();if(n-lastTouch<350)e.preventDefault();lastTouch=n;},{passive:false});
 addEventListener("keydown",e=>{
@@ -419,12 +519,12 @@ function updateDrive(dt){
   const oy=VY-(o.y-S.dist);
   if(oy>VY-34&&oy<VY+34){
    if(o.t==="waga"){o.hit=true;
-    if(load()>cap()){S.stop=2.6;S.fines+=300;S.score=Math.max(0,S.score-300);
+    if(load()>cap()){S.stop=2.6;S.fines+=300;SFX.angry();S.score=Math.max(0,S.score-300);
      toast("🚨 <b>Kontrola wagi!</b> Przekroczona ładowność — mandat 300 pkt i przymusowy postój. DMC to nie sugestia!");}
     else toast("✅ Waga OK — ładunek w normie. Tak jeździ profesjonalista!");}
    else if(Math.abs(o.lane-S.laneX)<0.5){o.hit=true;
     if(o.t==="hole"){
-     const fast=S.speed>vmax()*0.75,over=load()>cap();S.shake=0.4;
+     const fast=S.speed>vmax()*0.75,over=load()>cap();S.shake=0.4;SFX.thud();
      if(S.trip===1&&load()>0){
       let pct=(fast?0.10:0.04)*(over?2:1);
       const lost=Math.round(load()*pct/50)*50;
@@ -438,7 +538,7 @@ function updateDrive(dt){
  if(S.dist>=S.tripLen){
   if(S.trip===1){ // rozładunek
    S.stockB+=S.loadB*BRICK_KG;S.stockC+=S.loadC*CONC_KG;
-   S.delivered+=load();S.score+=load();S.loadB=0;S.loadC=0;
+   S.delivered+=load();S.score+=load();SFX.coin();S.loadB=0;S.loadC=0;
    toast("📦 <b>Rozładunek!</b> Materiały trafiły na budowę. Wracamy po kolejny kurs!");
    startTrip(-1);
   }else{S.state="depot";show("sDepot");depotUI();}
@@ -456,7 +556,7 @@ function updateSite(dt){
  if(S.doneB<S.needB){if(S.stockB>0){const u=Math.min(rB*dt,S.stockB,S.needB-S.doneB);S.stockB-=u;S.doneB+=u;}else stalled=true;}
  if(S.doneC<S.needC){if(S.stockC>0){const u=Math.min(rC*dt,S.stockC,S.needC-S.doneC);S.stockC-=u;S.doneC+=u;}else stalled=true;}
  if(stalled){S.stall+=dt;
-  if(S.stall>=7){S.stall=0;S.hearts--;
+  if(S.stall>=7){S.stall=0;S.hearts--;SFX.angry();
    toast(S.hearts>0?`😡 <b>Przestój na budowie!</b> Brakuje materiału — kierownik traci cierpliwość (${"❤".repeat(S.hearts)})`:"");
    if(S.hearts<=0)endLevel(false);}}
  if(S.doneB>=S.needB&&S.doneC>=S.needC)endLevel(true);
@@ -466,13 +566,13 @@ function updateSite(dt){
 function endLevel(win){
  if(S.state==="result"||S.state==="quiz")return;
  S.win=win;
- if(win){S.state="quiz";const q=gen().quiz;$("qQ").innerHTML=q.q;
+ if(win){SFX.win();S.state="quiz";const q=gen().quiz;$("qQ").innerHTML=q.q;
   document.querySelectorAll(".qopt").forEach((b,i)=>{b.textContent=(["A","B","C"][i])+". "+q.a[i];});
   show("sQuiz");}
- else showResult(false,false);
+ else{SFX.fail();showResult(false,false);}
 }
 document.querySelectorAll(".qopt").forEach(b=>b.onclick=()=>{
- const ok=+b.dataset.q===gen().quiz.ok;if(ok)S.score+=300;
+ const ok=+b.dataset.q===gen().quiz.ok;if(ok){S.score+=300;SFX.clear();}else SFX.angry();
  showResult(true,ok);});
 function showResult(win,quizOk){
  S.state="result";
@@ -491,7 +591,7 @@ function showResult(win,quizOk){
 $("bNext").onclick=()=>{
  if(!S.win){startLevel();return;}
  if(S.lvl<GENS.length-1){S.lvl++;startLevel();}
- else{$("fScore").textContent=S.score+" pkt";show("sFinal");S.state="final";}
+ else{$("fScore").textContent=S.score+" pkt";show("sFinal");rankShow();S.state="final";}
 };
 $("bAgain").onclick=()=>{S.lvl=0;S.score=0;startLevel();};
 $("bStart").onclick=()=>startLevel();
@@ -567,13 +667,42 @@ let last=performance.now();
 function loop(t){
  const dt=Math.min(0.05,(t-last)/1000);last=t;
  if(["depot","drive"].includes(S.state)){S.levelT+=dt;updateSite(dt);}
- if(S.state==="drive"){updateDrive(dt);drawRoad();drawVanTop(LANES[0]+(S.laneX)*(LANES[1]-LANES[0]),VY);drawHUD();}
+ if(S.state==="drive"){updateDrive(dt);drawRoad();drawVanTop(LANES[0]+(S.laneX)*(LANES[1]-LANES[0]),VY);drawHUD();SFX.engine(true,S.speed/260);}else SFX.engine(false);
  if(S.state==="depot")depotUI();
  if(S.toastT>0){S.toastT-=dt;if(S.toastT<=0)$("toast").style.display="none";}
  requestAnimationFrame(loop);
 }
 vanSide($("menuVan"),GENS[0]);
 requestAnimationFrame(loop);
+
+/* ===== RANKING (localStorage) ===== */
+const GAME_KEY="transporter";
+function rankLoad(){try{return JSON.parse(localStorage.getItem("vwrank_"+GAME_KEY))||[]}catch(e){return[]}}
+function rankRender(){const el=document.getElementById("rankList");if(!el)return;
+ const r=rankLoad();
+ el.innerHTML=r.length?"<b style='letter-spacing:.08em'>🏆 NAJLEPSI KIEROWCY</b><br>"+
+  r.map((e,i)=>(i+1)+". "+e.n+" — <b>"+e.s+" pkt</b>").join("<br>"):"";}
+function rankShow(){const i=document.getElementById("nameInp"),b=document.getElementById("bSave");
+ if(!i)return;i.style.display="block";b.style.display="block";
+ try{i.value=localStorage.getItem("vwrank_name")||"";}catch(e){}
+ rankRender();}
+(function(){const b=document.getElementById("bSave");if(!b)return;
+ b.addEventListener("click",()=>{const i=document.getElementById("nameInp");
+  const n=(i.value||"").trim().slice(0,12)||"Kierowca";
+  try{localStorage.setItem("vwrank_name",n);}catch(e){}
+  const r=rankLoad();r.push({n:n,s:Math.round(S.score)});
+  r.sort((a,b2)=>b2.s-a.s);
+  try{localStorage.setItem("vwrank_"+GAME_KEY,JSON.stringify(r.slice(0,5)));}catch(e){}
+  i.style.display="none";b.style.display="none";rankRender();});})();
+
+(function(){function bind(){var b=document.getElementById("bInfo"),c=document.getElementById("bInfoClose"),o=document.getElementById("infoOv");
+ if(b)b.onclick=function(){o.classList.add("on");};
+ if(c)c.onclick=function(){o.classList.remove("on");};
+ if(o)o.addEventListener("click",function(e){if(e.target===o)o.classList.remove("on");});}
+ if(document.readyState!=="loading")bind();else document.addEventListener("DOMContentLoaded",bind);})();
+
+(function(){var im=new Image();im.onload=function(){var el=document.getElementById("introPhoto"),sv=document.getElementById("menuVan");
+ if(el){el.src="transporter1.png";el.style.display="block";}if(sv)sv.style.display="none";};im.src="transporter1.png";})();
 </script>
 </body>
 </html>

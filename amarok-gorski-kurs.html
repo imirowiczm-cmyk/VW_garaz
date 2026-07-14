@@ -45,7 +45,7 @@
   #hud{position:absolute;left:0;right:0;top:0;padding:8px 10px;z-index:5;display:none;background:linear-gradient(#0A0F16EE,#0A0F1600)}
   #hud .top{display:flex;justify-content:space-between;font-family:'Saira Condensed';font-weight:700;font-size:15px;color:var(--cream)}
   #hud .row{display:flex;gap:8px;align-items:center;font-size:11px;color:var(--steel);margin-top:4px}
-  #hud .hbar{flex:1;height:9px;background:#060A10;border-radius:5px;overflow:hidden}
+  #hud .hbar{flex:1;height:9px;background:#0C1B2E;border:1px solid #34506F;border-radius:5px;overflow:hidden}
   #hud .hbar>i{display:block;height:100%}
   #ctrl{position:absolute;left:0;right:0;bottom:0;z-index:5;display:none;gap:8px;padding:10px;justify-content:space-between}
   .pedal{flex:1;height:72px;border-radius:12px;border:0;touch-action:none;
@@ -53,7 +53,7 @@
   #brake{background:var(--bad)} #gas{background:var(--ok)}
   #turbo{flex:0 0 84px;background:var(--turbo);font-size:15px;line-height:1.1}
   #turbo:disabled{background:#2A2A38;color:#5A5A68}
-  #toast{position:absolute;left:12px;right:12px;top:92px;z-index:8;background:#0A0F16E8;border-left:4px solid var(--amber);
+  #toast{position:absolute;left:12px;right:12px;top:92px;z-index:8;background:#193251EE;border:2px solid #E3A72F;border-left:6px solid var(--amber);box-shadow:0 6px 0 rgba(12,29,44,.4);
     border-radius:8px;padding:10px 12px;font-size:13.5px;display:none;line-height:1.35}
     .stars{font-size:34px;text-align:center;letter-spacing:6px;margin:6px 0}
   .infoBtn{position:absolute;top:12px;right:12px;z-index:30;width:38px;height:38px;border-radius:50%;
@@ -77,6 +77,9 @@
   #nameInp{display:block;width:100%;border:0;border-radius:10px;padding:12px;font-size:16px;font-family:'Saira',sans-serif;
     background:#0C1B2C;color:var(--cream);margin-top:4px;-webkit-user-select:text!important;user-select:text!important}
   #rankList{margin-top:10px;font-size:14px;line-height:1.65}
+
+  #introPhoto,.introPhoto{display:none;width:78%;max-width:280px;height:120px;object-fit:contain;margin:8px auto 2px;
+    filter:drop-shadow(0 12px 8px rgba(0,0,0,.35))}
 </style>
 </head>
 <body>
@@ -102,6 +105,7 @@
     <button class="infoBtn" id="bInfo" title="Instrukcja">ⓘ</button>
     <div class="vhead"><div class="badge" id="stBadge">1</div><h1 id="stTitle"></h1><div class="sub" id="stSub"></div></div>
     <svg id="introVan" width="270" height="118" viewBox="0 0 300 130" style="display:block;margin:10px auto 4px"></svg>
+    <img id="introPhoto" alt="Amarok">
     <div class="card fact"><b style="letter-spacing:.08em">🐺 CZY WIESZ, ŻE…</b><br><span id="stFact"></span></div>
     <div class="meta" id="stMeta"></div>
     <button class="btn" id="bGo">Start etapu</button>
@@ -218,12 +222,12 @@ const LEVELS=[
   fact:"Finał w Andach nieprzypadkowo — to góry Argentyny, gdzie narodziła się pierwsza generacja. Obecny Amarok (od 2022) powstaje we współpracy z Fordem w <b>RPA</b>: ładowność ok. <b>1,19 t</b>, uciąg <b>3,5 t</b>, brodzenie <b>800 mm</b>.",
   quiz:{q:"Gdzie produkowana jest obecna generacja Amaroka?",a:["W Argentynie","W Niemczech","W RPA"],ok:2}}
 ];
-/* ZDJĘCIE AUTA: wgraj do repo plik "amarok.png" (widok z boku, przodem W PRAWO,
+/* ZDJĘCIE AUTA: wgraj do repo plik "amarok1.png" (widok z boku, przodem W PRAWO,
    najlepiej PNG z przezroczystym tłem). Gra użyje go automatycznie;
    bez pliku zostaje rysunek wektorowy. */
 const CAR_IMG=new Image();let CAR_OK=false;
 CAR_IMG.onload=()=>{CAR_OK=true;};CAR_IMG.onerror=()=>{CAR_OK=false;};
-CAR_IMG.src="amarok.png";
+CAR_IMG.src="amarok1.png";
 const BOXES0=6, FUEL0=76, FUEL_CAN=30;
 const G=9.81, AIRG=6.6, PXM=9, W=430, H=696, GRAB=12;
 
@@ -731,6 +735,9 @@ function rankShow(){const i=document.getElementById("nameInp"),b=document.getEle
   r.sort((a,b2)=>b2.s-a.s);
   try{localStorage.setItem("vwrank_"+GAME_KEY,JSON.stringify(r.slice(0,5)));}catch(e){}
   i.style.display="none";b.style.display="none";rankRender();});})();
+
+(function(){var im=new Image();im.onload=function(){var el=document.getElementById("introPhoto"),sv=document.getElementById("introVan");
+ if(el){el.src="amarok1.png";el.style.display="block";}if(sv)sv.style.display="none";};im.src="amarok1.png";})();
 </script>
 </body>
 </html>

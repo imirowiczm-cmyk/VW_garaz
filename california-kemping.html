@@ -44,7 +44,7 @@
   #game.on{display:flex}
   #hud{display:flex;justify-content:space-between;align-items:center;
     font-family:'Saira Condensed';font-weight:700;font-size:16px;color:#fff;text-shadow:0 2px 0 #0006;padding:2px 4px}
-  #hud .pill{background:#00000038;border-radius:20px;padding:4px 12px}
+  #hud .pill{background:#193251CC;border:1.5px solid #E3A72F;border-radius:20px;padding:4px 12px;box-shadow:0 3px 0 rgba(0,0,0,.3)}
   #scenery{height:64px;position:relative;margin:2px 0 6px}
   #boardWrap{position:relative;margin:0 auto}
   #board{position:relative;border-radius:18px;touch-action:none;
@@ -71,17 +71,50 @@
   .piece.player .roof{position:absolute;background:#E8E2D2;border-radius:5px;box-shadow:inset 0 -2px 0 #C9BFA6}
   #tools{display:flex;gap:8px;margin-top:10px}
   #tools .btn{margin-top:0;padding:11px;font-size:15px}
-  #toast{position:absolute;left:14px;right:14px;top:82px;z-index:30;background:#173049EE;border-left:4px solid var(--sand);
+  #toast{position:absolute;left:14px;right:14px;top:82px;z-index:30;background:#193251EE;border:2px solid #E3A72F;border-left:6px solid #E3A72F;box-shadow:0 6px 0 rgba(0,0,0,.35);
     border-radius:10px;padding:10px 12px;font-size:13.5px;display:none;line-height:1.35;color:var(--cream)}
   .tree{position:absolute;bottom:0}
   #wmfoot{position:absolute;left:0;right:0;bottom:2px;z-index:26;pointer-events:none;text-align:center;
     font-size:9.5px;color:#FFFFFF55;letter-spacing:.06em}
   .shakeit{animation:shk .3s}
   @keyframes shk{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+  #backMenu{position:absolute;top:10px;left:10px;z-index:60;display:flex;align-items:center;
+    background:#00000066;color:var(--cream);text-decoration:none;font-family:'Saira Condensed';font-weight:700;
+    font-size:13px;padding:6px 12px;border-radius:16px;letter-spacing:.05em;border:1px solid #FFFFFF22}
+  #nameInp{display:block;width:100%;border:0;border-radius:10px;padding:12px;font-size:16px;font-family:'Saira',sans-serif;
+    background:#FFFFFF;color:#22303C;border:1px solid #C9BFA6;margin-top:4px;-webkit-user-select:text!important;user-select:text!important}
+  #rankList{margin-top:10px;font-size:14px;line-height:1.65}
+
+  /* ===== NOWY STYL INDEX (California) ===== */
+  .panel{background:#fff !important;border:2px solid #193251 !important;border-radius:18px !important;
+    box-shadow:0 8px 0 rgba(25,50,81,.15) !important;color:#193251 !important}
+  .panel .fact,.panel h2{color:#193251 !important}
+  .panel .fact b{color:#D4622A !important}
+  .btn{border-radius:14px !important;background:linear-gradient(135deg,#ff6b00,#ff8e3c) !important;color:#fff !important;
+    box-shadow:0 5px 0 #A8431F !important}
+  .btn:active{transform:translateY(3px) !important;box-shadow:0 2px 0 #A8431F !important}
+  .btn.ghost{background:#fff !important;color:#193251 !important;box-shadow:0 5px 0 rgba(25,50,81,.15) !important}
+  .btn.ghost:active{box-shadow:0 2px 0 rgba(25,50,81,.15) !important}
+  .infoBtn{position:absolute;top:12px;right:12px;z-index:30;width:38px;height:38px;border-radius:50%;
+    border:2px solid #193251;background:#fff;color:#193251;font-family:'Saira Condensed',sans-serif;
+    font-weight:900;font-size:20px;box-shadow:0 4px 0 rgba(25,50,81,.15);cursor:pointer}
+  .infoBtn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(25,50,81,.15)}
+  .infoOv{position:absolute;inset:0;z-index:40;display:none;flex-direction:column;justify-content:center;
+    padding:22px;background:rgba(12,27,46,.72)}
+  .infoOv.on{display:flex}
+  .infoOv .box{background:#fff;border:2px solid #193251;border-radius:20px;padding:18px;
+    box-shadow:0 10px 0 rgba(25,50,81,.2);color:#193251;font-size:14px;line-height:1.5}
+  .infoOv .box b{color:#D4622A}
+  .infoOv h2{font-family:'Saira Condensed',sans-serif;font-size:22px;color:#193251;margin-bottom:8px}
+
+  #introPhoto{display:none;width:78%;max-width:280px;height:120px;object-fit:contain;margin:8px auto 2px;
+    filter:drop-shadow(0 12px 8px rgba(0,0,0,.35))}
 </style>
 </head>
 <body>
 <div id="wrap"><div id="app">
+  <a id="backMenu" href="index.html">‹ Garaż</a>
 
   <!-- INTRO POZIOMU -->
   <div class="screen on" id="sStory">
@@ -89,15 +122,19 @@
       <h1 style="font-size:32px;color:#fff;text-shadow:0 3px 0 #0006">California</h1>
       <div style="font-family:'Saira Condensed';letter-spacing:.2em;color:#FFE9C9;font-size:13px">WYJAZD Z KEMPINGU · ŁAMIGŁÓWKA</div>
     </div>
+    <button class="infoBtn" id="bInfo">ⓘ</button>
     <svg id="introScene" width="100%" height="150" viewBox="0 0 430 150"></svg>
+    <img id="introPhoto" alt="California">
     <div class="panel">
       <h2 id="stTitle">Poziom 1</h2>
       <div class="fact" id="stFact"></div>
     </div>
-    <div class="panel" style="padding:12px">
-      <div class="fact" style="margin:0">🎯 <b>Cel:</b> wyprowadź kremowo-turkusową Californię do wyjazdu ➡ po prawej. <b>Przeciągaj palcem</b> auta i przyczepy — poruszają się tylko wzdłuż swojej osi. Im mniej ruchów, tym więcej gwiazdek!</div>
-    </div>
     <button class="btn" id="bGo">Graj</button>
+    <div class="infoOv" id="infoOv"><div class="box"><h2>🎯 Jak grać</h2>
+      Wyprowadź <b>kremowo-turkusową Californię</b> do wyjazdu ➡ po prawej stronie planszy.<br><br>
+      <b>Przeciągaj palcem</b> auta i przyczepy — każdy pojazd rusza się tylko wzdłuż swojej osi (poziomo albo pionowo).<br><br>
+      Odblokuj drogę Californii, przestawiając to, co ją blokuje. <b>Im mniej ruchów, tym więcej gwiazdek!</b>
+      <button class="btn" id="bInfoClose" style="margin-top:14px">Rozumiem</button></div></div>
   </div>
 
   <!-- GRA -->
@@ -140,6 +177,11 @@
     <svg id="finScene" width="100%" height="150" viewBox="0 0 430 150"></svg>
     <div class="big" id="fScore"></div>
     <div class="panel"><div class="fact" style="margin:0">Dziesięć kempingów i dziesiątki sprytnych manewrów — California w drodze na kolejną przygodę. Tak jeździ się legendą od <b>1988 roku</b>. 🌅</div></div>
+        <div class="panel">
+      <input id="nameInp" maxlength="12" placeholder="Wpisz swoje imię">
+      <button class="btn" id="bSave" style="margin-top:8px">💾 Zapisz wynik</button>
+      <div id="rankList"></div>
+    </div>
     <button class="btn" id="bAgain">Zagraj od nowa</button>
   </div>
 
@@ -149,6 +191,51 @@
 
 <script>
 "use strict";
+/* ===== DŹWIĘKI (Web Audio, w pełni syntetyczne) ===== */
+const SFX=(()=>{
+ let ac=null,master=null,engOsc=null,engGain=null,engFl=null;
+ function init(){if(ac)return;
+  try{ac=new (window.AudioContext||window.webkitAudioContext)();
+  master=ac.createGain();master.gain.value=0.33;master.connect(ac.destination);}catch(e){}}
+ document.addEventListener("pointerdown",()=>{init();if(ac&&ac.state==="suspended")ac.resume();},{capture:true});
+ function tone(f,dur,type,vol,slide){if(!ac)return;
+  const o=ac.createOscillator(),g=ac.createGain();
+  o.type=type||"sine";o.frequency.setValueAtTime(f,ac.currentTime);
+  if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(30,f+slide),ac.currentTime+dur);
+  g.gain.setValueAtTime(vol||0.3,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+dur);
+  o.connect(g);g.connect(master);o.start();o.stop(ac.currentTime+dur+0.02);}
+ function noise(dur,vol,f){if(!ac)return;
+  const n=ac.createBufferSource(),b=ac.createBuffer(1,Math.ceil(ac.sampleRate*dur),ac.sampleRate);
+  const d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  n.buffer=b;const g=ac.createGain(),fl=ac.createBiquadFilter();
+  fl.type="lowpass";fl.frequency.value=f||800;
+  g.gain.setValueAtTime(vol||0.5,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+dur);
+  n.connect(fl);fl.connect(g);g.connect(master);n.start();}
+ return{
+  blip(){tone(640,0.05,"square",0.18);},
+  click(){tone(440,0.06,"square",0.22);},
+  rotate(){tone(520,0.07,"triangle",0.28,150);},
+  thud(){noise(0.13,0.55,320);tone(85,0.13,"sine",0.5,-30);},
+  crack(){noise(0.09,0.6,2600);tone(1300,0.08,"square",0.18,-700);},
+  clear(){[523,659,784].forEach((f,i)=>setTimeout(()=>tone(f,0.16,"triangle",0.35),i*75));},
+  win(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,0.22,"triangle",0.4),i*115));},
+  fail(){tone(220,0.32,"sawtooth",0.3,-120);setTimeout(()=>tone(155,0.42,"sawtooth",0.26,-70),170);},
+  coin(){tone(880,0.08,"square",0.26);setTimeout(()=>tone(1175,0.12,"square",0.26),75);},
+  ding(){tone(988,0.13,"triangle",0.3);},
+  angry(){tone(185,0.26,"sawtooth",0.34,-70);},
+  turbo(){tone(190,0.55,"sawtooth",0.3,650);},
+  crash(){noise(0.55,0.7,520);tone(65,0.5,"sine",0.55,-35);},
+  engine(on,rate){if(!ac)return;
+   if(on&&!engOsc){engOsc=ac.createOscillator();engGain=ac.createGain();engFl=ac.createBiquadFilter();
+    engOsc.type="sawtooth";engGain.gain.value=0.045;engFl.type="lowpass";engFl.frequency.value=300;
+    engOsc.connect(engFl);engFl.connect(engGain);engGain.connect(master);engOsc.start();}
+   if(!on&&engOsc){try{engOsc.stop();}catch(e){}engOsc=null;return;}
+   if(engOsc)engOsc.frequency.value=42+Math.max(0,Math.min(1.6,rate))*95;}
+ };
+})();
+
 const $=id=>document.getElementById(id);
 const N=6;
 /* ============ POZIOMY (P = California, exit: prawa strona rzędu 2) ============ */
@@ -192,7 +279,7 @@ const S={lvl:0,score:0,moves:0,pieces:[],hist:[],cell:0,won:false};
 
 /* ============ EKRANY ============ */
 const SCREENS=["sStory","sQuiz","sResult","sFinal"];
-function show(id){SCREENS.forEach(s=>$(s).classList.toggle("on",s===id));
+function show(id){var bm=document.getElementById("backMenu");if(bm)bm.style.display=(id===null)?"none":"flex";SCREENS.forEach(s=>$(s).classList.toggle("on",s===id));
  $("game").classList.toggle("on",id===null);}
 function story(){
  $("stTitle").textContent="Poziom "+(S.lvl+1)+" z "+LEVELS.length+(S.lvl>=6?" · EKSPERT 🔥":"");
@@ -204,10 +291,10 @@ $("bAgain").onclick=()=>{S.lvl=0;S.score=0;story();};
 $("bNext").onclick=()=>{
  if(!S.won){startLevel();return;}
  if(S.lvl<LEVELS.length-1){S.lvl++;story();}
- else{$("fScore").textContent=Math.round(S.score)+" pkt";scene($("finScene"),150,true);show("sFinal");}
+ else{$("fScore").textContent=Math.round(S.score)+" pkt";scene($("finScene"),150,true);show("sFinal");rankShow();}
 };
 document.querySelectorAll(".qopt").forEach(b=>b.onclick=()=>{
- const ok=+b.dataset.q===LEVELS[S.lvl].quiz.ok;if(ok)S.score+=300;
+ const ok=+b.dataset.q===LEVELS[S.lvl].quiz.ok;if(ok){S.score+=300;SFX.clear();}else SFX.angry();
  showResult(ok);});
 
 /* ============ PLANSZA ============ */
@@ -295,7 +382,7 @@ function attachDrag(el,p){
    let snap=Math.round(cur);
    snap=Math.max(min,Math.min(max,snap));
    const moved=snap!==orig;
-   if(moved){S.hist.push(S.pieces.map(q=>({...q})));S.moves++;}
+   if(moved){S.hist.push(S.pieces.map(q=>({...q})));S.moves++;SFX.blip();}
    if(p.dir==="h")p.x=snap;else p.y=snap;
    el.style.transition="left .16s,top .16s";posPiece(el,p);
    setTimeout(()=>el.style.transition="",180);
@@ -307,6 +394,7 @@ function attachDrag(el,p){
  });
 }
 function winLevel(el,p){
+ SFX.win();
  S.won=true;
  el.style.transition="left .8s ease-in";el.style.left=(N*S.cell+140)+"px";
  const L=LEVELS[S.lvl];
@@ -373,11 +461,40 @@ document.addEventListener("touchmove",e=>{
 },{passive:false});
 document.getElementById("board").addEventListener("touchstart",e=>e.preventDefault(),{passive:false});
 document.addEventListener("contextmenu",e=>e.preventDefault());
-document.addEventListener("selectstart",e=>e.preventDefault());
+document.addEventListener("selectstart",e=>{if(!e.target||e.target.tagName!=="INPUT")e.preventDefault();});
 document.addEventListener("gesturestart",e=>e.preventDefault());
 let lastTouch=0;document.addEventListener("touchend",e=>{const n=Date.now();
  if(n-lastTouch<350)e.preventDefault();lastTouch=n;},{passive:false});
 story();
+
+/* ===== RANKING (localStorage) ===== */
+const GAME_KEY="california";
+function rankLoad(){try{return JSON.parse(localStorage.getItem("vwrank_"+GAME_KEY))||[]}catch(e){return[]}}
+function rankRender(){const el=document.getElementById("rankList");if(!el)return;
+ const r=rankLoad();
+ el.innerHTML=r.length?"<b style='letter-spacing:.08em'>🏆 NAJLEPSI KIEROWCY</b><br>"+
+  r.map((e,i)=>(i+1)+". "+e.n+" — <b>"+e.s+" pkt</b>").join("<br>"):"";}
+function rankShow(){const i=document.getElementById("nameInp"),b=document.getElementById("bSave");
+ if(!i)return;i.style.display="block";b.style.display="block";
+ try{i.value=localStorage.getItem("vwrank_name")||"";}catch(e){}
+ rankRender();}
+(function(){const b=document.getElementById("bSave");if(!b)return;
+ b.addEventListener("click",()=>{const i=document.getElementById("nameInp");
+  const n=(i.value||"").trim().slice(0,12)||"Kierowca";
+  try{localStorage.setItem("vwrank_name",n);}catch(e){}
+  const r=rankLoad();r.push({n:n,s:Math.round(S.score)});
+  r.sort((a,b2)=>b2.s-a.s);
+  try{localStorage.setItem("vwrank_"+GAME_KEY,JSON.stringify(r.slice(0,5)));}catch(e){}
+  i.style.display="none";b.style.display="none";rankRender();});})();
+
+(function(){function bind(){var b=document.getElementById("bInfo"),c=document.getElementById("bInfoClose"),o=document.getElementById("infoOv");
+ if(b)b.onclick=function(){o.classList.add("on");};
+ if(c)c.onclick=function(){o.classList.remove("on");};
+ if(o)o.addEventListener("click",function(e){if(e.target===o)o.classList.remove("on");});}
+ if(document.readyState!=="loading")bind();else document.addEventListener("DOMContentLoaded",bind);})();
+
+(function(){var im=new Image();im.onload=function(){var el=document.getElementById("introPhoto"),sv=document.getElementById("introScene");
+ if(el){el.src="california1.png";el.style.display="block";}if(sv)sv.style.display="none";};im.src="california1.png";})();
 </script>
 </body>
 </html>
